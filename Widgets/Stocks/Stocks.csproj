@@ -10,7 +10,7 @@
         <OutputPath>$(SolutionDir)bin/widgets/</OutputPath>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="CefSharp.Wpf" Version="79.1.360" />
+      <PackageReference Include="CefSharp.Wpf" Version="86.0.241" />
       <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.0.0" />
     </ItemGroup>
     <ItemGroup>
