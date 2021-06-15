@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+    <PropertyGroup>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <UseWPF>true</UseWPF>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Nullable>enable</Nullable>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <OutputPath>$(SolutionDir)bin/widgets/</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <COMReference Include="iTunesLib.dll">
+            <Guid>9e93c96f-cf0d-43f6-8ba8-b807a3370712</Guid>
+            <VersionMajor>1</VersionMajor>
+            <VersionMinor>13</VersionMinor>
+            <Lcid>0</Lcid>
+            <WrapperTool>tlbimp</WrapperTool>
+            <Isolated>false</Isolated>
+        </COMReference>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\WidgetBase\WidgetBase.csproj" />
+    </ItemGroup>
+</Project>

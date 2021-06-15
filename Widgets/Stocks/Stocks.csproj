@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+    <PropertyGroup>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <UseWPF>true</UseWPF>
+        <Nullable>enable</Nullable>
+        <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <OutputPath>$(SolutionDir)bin/widgets/</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="CefSharp.Wpf" Version="79.1.360" />
+      <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\WidgetBase\WidgetBase.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Stocks.xaml">
+            <SubType>Designer</SubType>
+        </Page>
+    </ItemGroup>
+</Project>

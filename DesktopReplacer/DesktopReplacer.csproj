@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
+        <PreserveCompilationContext>false</PreserveCompilationContext>
+        <UseWPF>true</UseWPF>
+        <UseWindowsForms>true</UseWindowsForms>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <OutputPath>$(SolutionDir)bin/</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="cef.redist.x64" Version="79.1.36" />
+      <PackageReference Include="CefSharp.Common" Version="79.1.360" />
+      <PackageReference Include="CefSharp.Wpf" Version="79.1.360" />
+      <PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.0.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+      <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\iTunesWidget\iTunes.csproj" />
+    </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="false">
+        <!-- TODO -->
+      <Exec Command="cd &quot;$(OutDir)&quot;&#xD;&#xA;del /S &quot;*.pdb&quot;&#xD;&#xA;del /S &quot;*.json&quot;&#xD;&#xA;echo &quot;deleted debugging data&quot;" />
+    </Target>
+</Project>

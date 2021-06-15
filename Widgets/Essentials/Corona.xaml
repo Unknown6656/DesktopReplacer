@@ -1,0 +1,68 @@
+﻿<unknown6656:AbstractDesktopWidgetWithSettings x:Class="Widgets.Essentials.Corona"
+                                               x:TypeArguments="local:CoronaSettings"
+                                               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                               xmlns:local="clr-namespace:Widgets.Essentials"
+                                               xmlns:unknown6656="https://unknown6656.com/"
+                                               mc:Ignorable="d"
+                                               d:DesignHeight="85" d:DesignWidth="340"
+                                               TickInterval="1000"
+                                               DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <DataGrid AutoGenerateColumns="False" HorizontalAlignment="Center" Name="datagrid" VerticalAlignment="Top" IsReadOnly="True" Foreground="Black"
+              FontFamily="Consolas" HorizontalContentAlignment="Right" Focusable="False" FontWeight="Bold"
+              BorderBrush="Transparent" BorderThickness="0" Background="Transparent" RowBackground="Transparent" HeadersVisibility="None" AreRowDetailsFrozen="True"
+              CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding Country}"/>
+            <DataGridTextColumn Binding="{Binding Cases}">
+                <DataGridTextColumn.ElementStyle>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextAlignment" Value="Right"/>
+                        <Setter Property="Foreground" Value="#040"/>
+                        <Setter Property="Padding" Value="3 0"/>
+                    </Style>
+                </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTextColumn Binding="{Binding Deaths}">
+                <DataGridTextColumn.ElementStyle>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextAlignment" Value="Right"/>
+                        <Setter Property="Foreground" Value="#600"/>
+                        <Setter Property="Padding" Value="3 0"/>
+                    </Style>
+                </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTextColumn Binding="{Binding KDR}">
+                <DataGridTextColumn.ElementStyle>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextAlignment" Value="Right"/>
+                        <Setter Property="Padding" Value="3 0"/>
+                    </Style>
+                </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTextColumn Binding="{Binding CPop}">
+                <DataGridTextColumn.ElementStyle>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextAlignment" Value="Right"/>
+                        <Setter Property="Padding" Value="3 0"/>
+                    </Style>
+                </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTextColumn Binding="{Binding DPop}">
+                <DataGridTextColumn.ElementStyle>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextAlignment" Value="Right"/>
+                        <Setter Property="Padding" Value="3 0"/>
+                    </Style>
+                </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+        </DataGrid.Columns>
+        <DataGrid.RowStyle>
+            <Style TargetType="DataGridRow">
+                <Setter Property="IsHitTestVisible" Value="False"/>
+            </Style>
+        </DataGrid.RowStyle>
+    </DataGrid>
+</unknown6656:AbstractDesktopWidgetWithSettings>

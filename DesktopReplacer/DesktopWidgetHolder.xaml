@@ -1,0 +1,47 @@
+﻿<ContentControl x:Class="DesktopReplacer.DesktopWidgetHolder"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                xmlns:unknown6656="https://unknown6656.com/"
+                mc:Ignorable="d"
+                d:DesignHeight="150" d:DesignWidth="350"
+                Foreground="Black" Background="#6aaa" BorderBrush="Transparent" BorderThickness="0"
+                MinHeight="30" Margin="2 2 2 0"
+                DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                Content="{Binding Widget.Content}">
+    <ContentControl.Effect>
+        <DropShadowEffect BlurRadius="7" Color="White" ShadowDepth="0" Opacity=".7"/>
+    </ContentControl.Effect>
+    <ContentControl.Template>
+        <ControlTemplate TargetType="{x:Type ContentControl}">
+            <Grid Margin="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="0" BorderThickness="2" BorderBrush="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" CornerRadius="15">
+                    <Grid Margin="7">
+                        <ContentControl Name="cc" Content="{TemplateBinding Content}"/>
+                        <TextBlock Name="cc_placeholder" FontStyle="Italic" FontWeight="Bold" Margin="7 0" Visibility="Collapsed">
+                            <Run Text="{Binding Widget.WidgetName}"/>
+                            (version <Run Text="{Binding Widget.WidgetVersion}"/>)
+                        </TextBlock>
+                    </Grid>
+                </Border>
+                <Button Grid.Column="0" Grid.Row="0" x:Name="triangle" Width="20" Height="20" Margin="-20 -5 -2 0" BorderBrush="Transparent" Background="Transparent" Padding="0" Cursor="Hand" Click="Triangle_Click">
+                    <icons:PackIconMaterial Kind="Triangle" Margin="0" Width="12" Height="12" RenderTransformOrigin=".5 .5">
+                        <icons:PackIconMaterial.RenderTransform>
+                            <RotateTransform x:Name="triangle_rot" Angle="0"/>
+                        </icons:PackIconMaterial.RenderTransform>
+                    </icons:PackIconMaterial>
+                </Button>
+            </Grid>
+        </ControlTemplate>
+    </ContentControl.Template>
+</ContentControl>

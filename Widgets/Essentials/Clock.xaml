@@ -1,0 +1,25 @@
+﻿<unknown6656:AbstractDesktopWidget x:Class="Widgets.Essentials.Clock"
+                                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                   xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                                   xmlns:unknown6656="https://unknown6656.com/"
+                                   mc:Ignorable="d"
+                                   d:DesignHeight="85" d:DesignWidth="340"
+                                   TickInterval="1000"
+                                   DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <StackPanel Orientation="Vertical">
+        <StackPanel.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="0 -8"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="TextAlignment" Value="Center"/>
+                <Setter Property="FontFamily" Value="Consolas"/>
+            </Style>
+        </StackPanel.Resources>
+        <TextBlock x:Name="lb_unix" FontSize="20">0x-------- (----------)</TextBlock>
+        <TextBlock x:Name="lb_time" FontSize="60">--:--:--</TextBlock>
+        <TextBlock x:Name="lb_day" FontSize="24">---------------, --- --, ----</TextBlock>
+    </StackPanel>
+</unknown6656:AbstractDesktopWidget>

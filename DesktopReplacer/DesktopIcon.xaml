@@ -1,0 +1,53 @@
+﻿<Button x:Class="DesktopReplacer.DesktopIcon"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:DesktopReplacer"
+        mc:Ignorable="d" 
+        d:DesignHeight="80" d:DesignWidth="80"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        HorizontalAlignment="Center" VerticalAlignment="Top" SnapsToDevicePixels="True"
+        Background="Transparent" BorderBrush="Transparent" BorderThickness="0" TextElement.Foreground="WhiteSmoke" Cursor="Hand">
+    <Border BorderThickness="1" CornerRadius="3">
+        <Border.Style>
+            <Style TargetType="{x:Type Border}">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#3DDADADA"/>
+                        <Setter Property="BorderBrush" Value="#FFDADADA"/>
+                    </Trigger>
+                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=local:DesktopIcon}}" Value="True">
+                        <Setter Property="Background" Value="#3D26A0DA"/>
+                        <Setter Property="BorderBrush" Value="#FF26A0DA"/>
+                    </DataTrigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="TextElement.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <StackPanel Orientation="Vertical" Width="{Binding ActualWidth}" Height="{Binding ActualHeight}" SnapsToDevicePixels="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <StackPanel.Style>
+                <Style TargetType="{x:Type StackPanel}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Hidden}" Value="True">
+                            <Setter Property="Opacity" Value=".5"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <StackPanel.Effect>
+                <DropShadowEffect ShadowDepth="0" BlurRadius="10" Color="Black"/>
+            </StackPanel.Effect>
+            <Image Source="{Binding Icon}" Width="{Binding IconSize}" Height="{Binding IconSize}"/>
+            <TextBlock Text="{Binding Text}" DockPanel.Dock="Bottom" Width="{Binding ActualWidth}" TextWrapping="Wrap" TextAlignment="Center">
+                <TextBlock.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="3" Color="Black"/>
+                </TextBlock.Effect>
+            </TextBlock>
+        </StackPanel>
+    </Border>
+</Button>
