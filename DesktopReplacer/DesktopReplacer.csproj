@@ -13,11 +13,11 @@
         <OutputPath>$(SolutionDir)bin/</OutputPath>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="cef.redist.x64" Version="79.1.36" />
-      <PackageReference Include="CefSharp.Common" Version="79.1.360" />
-      <PackageReference Include="CefSharp.Wpf" Version="79.1.360" />
-      <PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.0.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+      <PackageReference Include="cef.redist.x64" Version="91.1.6" />
+      <PackageReference Include="CefSharp.Common" Version="90.6.70" />
+      <PackageReference Include="CefSharp.Wpf" Version="90.6.70" />
+      <PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.8.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     </ItemGroup>
     <ItemGroup>

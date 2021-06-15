@@ -20,7 +20,7 @@
         </COMReference>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.0.0" />
+        <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\WidgetBase\WidgetBase.csproj" />
