@@ -26,6 +26,9 @@ using System.Reflection;
 using Newtonsoft.Json;
 using System.Windows.Media;
 using System.Collections;
+using Unknown6656.Common;
+using Unknown6656.Controls.Console;
+using Unknown6656.IO;
 
 namespace DesktopReplacer
 {
@@ -388,105 +391,59 @@ namespace DesktopReplacer
             .SelectMany(dir => dir.EnumerateFileSystemInfos())
             .ToArray();
 
-            using RegistryKey rkey = Registry.CurrentUser.OpenSubKey(RKEY_DESKTOP);
-
-            byte[] raw = (byte[])rkey.GetValue("IconLayouts");
-            using MemoryStream ms = new(raw);
-            using BinaryReader rd = new(ms);
-
-            string read_str()
-            {
-                char[] len = new char[rd.ReadInt64()];
-
-                for (int i = 0; i < len.Length; ++i)
-                    len[i] = (char)rd.ReadInt16();
-
-                return new string(len).TrimEnd('\0');
-            }
-
-            rd.ReadBytes(16);
-            rd.ReadInt32();
-            rd.ReadInt32();
-
-            string[] names = new string[rd.ReadInt64()];
-            (string name, int x, int y, FileSystemInfo? path)[] ics = new (string, int, int, FileSystemInfo?)[names.Length];
-
-            for (int i = 0; i < names.Length; ++i)
-                names[i] = read_str();
-
-            for (int i = 0, dlen = (int)rd.ReadInt64(); i < dlen; ++i)
-            {
-                rd.ReadInt32();
-                read_str();
-
-                for (int j = 0, wlen = (int)rd.ReadInt64(); j < wlen; ++j)
+            if (Registry.CurrentUser.OpenSubKey(RKEY_DESKTOP) is RegistryKey rkey && (byte[]?)rkey.GetValue("IconLayouts", Array.Empty<byte>()) is byte[] raw)
+                using (rkey)
                 {
-                    rd.ReadInt32();
+                    DesktopDictionary desktops = DesktopDictionary.Read(raw, desktop_files);
+                    ViewMdode mode = (ViewMdode)(int)(rkey.GetValue("LogicalViewMode") ?? 3);
+                    double size = (int)(rkey.GetValue("IconSize") ?? 0) * 1.1;
+                    double width = size + 60;
+                    double height = size + 50;
 
-                    rd.ReadInt32();
-                    rd.ReadInt32();
-                    rd.ReadSingle();
-                    rd.ReadSingle();
-                    rd.ReadInt32();
+                    rkey.Close();
 
-                    for (int k = 0, len = (int)rd.ReadInt64(); k < len; ++k)
+                    desktop_icons.Children.Clear();
+                    _icons.Clear();
+
+                    foreach (DesktopIcon icon in from desktop in desktops.Desktops
+                                                 from workspace in desktop.Workspaces ?? Array.Empty<WorkspaceInfo>()
+                                                 from icon in workspace.Icons ?? Array.Empty<IconInfo>()
+                                                 select new DesktopIcon()
+                                                 {
+                                                     RawIcon = icon,
+                                                     AssociatedFile = icon.MatchingFiles.FirstOrDefault(),
+                                                     Text = icon.DisplayName.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase)
+                                                         || icon.DisplayName.EndsWith(".url", StringComparison.OrdinalIgnoreCase) ? icon.DisplayName[..^4] : icon.DisplayName,
+                                                     IconSize = size,
+                                                     Width = width,
+                                                     Height = height,
+                                                     XPos = icon.X * width,
+                                                     YPos = icon.Y * height,
+                                                 })
                     {
-                        int px = (int)rd.ReadSingle();
-                        int py = (int)rd.ReadSingle();
-                        int index = rd.ReadInt16();
+                        _icons.Add(icon);
 
-                        ics[index] = (names[index], px, py, desktop_files.Where(fi => names[index].Equals(fi.Name, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault());
+                        if (icon.RawIcon.MatchingFiles.Length > 0 && icon.RawIcon.MatchingFiles[0] is { } file)
+                        {
+                            icon.IsHidden = file.Attributes.HasFlag(FileAttributes.Hidden);
+
+                            if (file is DirectoryInfo)
+                            {
+                                // TODO
+                            }
+                            else
+                                using (ShellFile shell_file = ShellFile.FromFilePath(file.FullName))
+                                    icon.Icon = CreateImageSource(shell_file.Thumbnail.ExtraLargeBitmap);
+                        }
+
+                        icon.MouseDoubleClick += Icon_MouseDoubleClick;
+                        icon.Click += Icon_Click;
+                        icon.MouseDown += Icon_MouseDown;
+                        icon.MouseUp += Icon_MouseUp;
+
+                        desktop_icons.Children.Add(icon);
                     }
                 }
-            }
-
-            ViewMdode mode = (ViewMdode)(int)rkey.GetValue("LogicalViewMode");
-            double size = (int)rkey.GetValue("IconSize") * 1.1;
-            double width = size + 60;
-            double height = size + 50;
-
-            rkey.Close();
-
-            desktop_icons.Children.Clear();
-            _icons.Clear();
-
-            foreach ((string name, int x, int y, FileSystemInfo path) in ics)
-            {
-                DesktopIcon icon = new()
-                {
-                    AssociatedFile = path,
-                    Text = name.ToLower().EndsWith(".lnk") || name.ToLower().EndsWith(".url") ? name[..^4] : name,
-                    IconSize = size,
-                    Width = width,
-                    Height = height,
-                    XPos = x * width,
-                    YPos = y * height,
-                };
-
-                _icons.Add(icon);
-
-                if (path is { } fsi)
-                {
-                    icon.IsHidden = fsi.Attributes.HasFlag(FileAttributes.Hidden);
-
-                    if (fsi is DirectoryInfo)
-                    {
-                        // TODO
-                    }
-                    else
-                    {
-                        using ShellFile file = ShellFile.FromFilePath(fsi.FullName);
-
-                        icon.Icon = CreateImageSource(file.Thumbnail.ExtraLargeBitmap);
-                    }
-                }
-
-                icon.MouseDoubleClick += Icon_MouseDoubleClick;
-                icon.Click += Icon_Click;
-                icon.MouseDown += Icon_MouseDown;
-                icon.MouseUp += Icon_MouseUp;
-                desktop_icons.Children.Add(icon);
-            }
         }
 
         private void LoadWidgets()
