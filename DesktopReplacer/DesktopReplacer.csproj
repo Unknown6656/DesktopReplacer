@@ -1,30 +1,46 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <OutputType>WinExe</OutputType>
         <TargetFramework>net6.0-windows</TargetFramework>
-        <LangVersion>preview</LangVersion>
-        <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
-        <PreserveCompilationContext>false</PreserveCompilationContext>
+        <PlatformTarget>x64</PlatformTarget>
         <UseWPF>true</UseWPF>
         <UseWindowsForms>true</UseWindowsForms>
+
+        <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
+        <NullableContextOptions>enable</NullableContextOptions>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <OutputPath>$(SolutionDir)bin</OutputPath>
+
+        <!-- <TrimMode>Link</TrimMode> -->
+        <Deterministic>true</Deterministic>
+        <PublishTrimmed>true</PublishTrimmed>
+        <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+        <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <OutputPath>$(SolutionDir)bin/</OutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <PreserveCompilationContext>false</PreserveCompilationContext>
+
+        <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="cef.redist.x64" Version="91.1.6" />
-      <PackageReference Include="CefSharp.Common" Version="90.6.70" />
-      <PackageReference Include="CefSharp.Wpf" Version="90.6.70" />
-      <PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.8.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+        <PackageReference Include="cef.redist.x64" Version="91.1.16" />
+        <PackageReference Include="CefSharp.Common" Version="91.1.160" />
+        <PackageReference Include="CefSharp.Wpf" Version="91.1.160" />
+        <PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.8.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Unknown6656.Core" Version="1.0.22" />
+        <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\iTunesWidget\iTunes.csproj" />
+        <ProjectReference Include="../Widgets/iTunes/iTunes.csproj" />
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="false">
         <!-- TODO -->
-      <Exec Command="cd &quot;$(OutDir)&quot;&#xD;&#xA;del /S &quot;*.pdb&quot;&#xD;&#xA;del /S &quot;*.json&quot;&#xD;&#xA;echo &quot;deleted debugging data&quot;" />
+        <!--<Exec Command="cd &quot;$(OutDir)&quot;&#xD;&#xA;del /S &quot;*.pdb&quot;&#xD;&#xA;del /S &quot;*.json&quot;&#xD;&#xA;echo &quot;deleted debugging data&quot;" />-->
     </Target>
 </Project>

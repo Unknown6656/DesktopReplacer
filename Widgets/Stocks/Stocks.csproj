@@ -1,20 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
-        <LangVersion>preview</LangVersion>
+        <PlatformTarget>x64</PlatformTarget>
         <UseWPF>true</UseWPF>
+        <UseWindowsForms>true</UseWindowsForms>
+
+        <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
-        <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
+        <NullableContextOptions>enable</NullableContextOptions>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <OutputPath>$(SolutionDir)bin</OutputPath>
+
+        <!-- <TrimMode>Link</TrimMode> -->
+        <Deterministic>true</Deterministic>
+        <PublishTrimmed>true</PublishTrimmed>
+        <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+        <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-        <OutputPath>$(SolutionDir)bin/widgets/</OutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <PreserveCompilationContext>false</PreserveCompilationContext>
+
+        <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="CefSharp.Wpf" Version="90.6.70" />
-      <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
+        <PackageReference Include="CefSharp.Wpf" Version="90.6.70" />
+        <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\WidgetBase\WidgetBase.csproj" />
+        <ProjectReference Include="../../WidgetBase/WidgetBase.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Page Update="Stocks.xaml">

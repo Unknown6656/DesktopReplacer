@@ -1,23 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
-        <LangVersion>preview</LangVersion>
+        <PlatformTarget>x64</PlatformTarget>
         <UseWPF>true</UseWPF>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <NullableContextOptions>enable</NullableContextOptions>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
         <OutputPath>$(SolutionDir)bin/widgets/</OutputPath>
+
+        <!-- <TrimMode>Link</TrimMode> -->
+        <Deterministic>true</Deterministic>
+        <PublishTrimmed>true</PublishTrimmed>
+        <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+        <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <PreserveCompilationContext>false</PreserveCompilationContext>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\WidgetBase\WidgetBase.csproj" />
+        <ProjectReference Include="../../WidgetBase/WidgetBase.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <Page Update="Corona.xaml">
-        <SubType>Designer</SubType>
-      </Page>
+        <Page Update="Corona.xaml">
+            <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 </Project>
