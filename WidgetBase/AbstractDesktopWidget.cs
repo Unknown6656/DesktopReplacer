@@ -1,14 +1,14 @@
-﻿using System;
-using System.Reflection;
-using System.Linq;
-using System.IO;
-
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows;
+
 using System.Collections.Generic;
-using System.Timers;
 using System.Threading.Tasks;
+using System.Reflection;
+using System.Timers;
+using System.Linq;
+using System.IO;
+using System;
 
 using Newtonsoft.Json;
 
@@ -250,7 +250,7 @@ namespace unknown6656
                 if (GetSettingsType(widget) is Type target && settings.TryGetValue(widget.WidgetSettingsKey, out object? data))
                 {
                     data = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data), target); // force convert types by named equality
-                    
+
                     if (data is { })
                         TrySetSettings(widget, data);
                 }

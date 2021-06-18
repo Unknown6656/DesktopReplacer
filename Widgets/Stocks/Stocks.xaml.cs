@@ -122,7 +122,7 @@ namespace Widgets.Stocks
         }
 
         public override void OnUnload(ref StocksSettings settings)
-        {   
+        {
         }
 
         public override Task OnTick()

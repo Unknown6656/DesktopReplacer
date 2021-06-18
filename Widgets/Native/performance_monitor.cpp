@@ -60,8 +60,6 @@ struct MSAcpi_ThermalZoneTemperature
 
 
 
-
-
 extern "C" __declspec(dllexport) Win32_Processor __cdecl fetch_proc()
 {
     return retrieveWmi<Win32_Processor>();

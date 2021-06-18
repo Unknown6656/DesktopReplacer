@@ -7,7 +7,7 @@ namespace DesktopReplacer
     internal unsafe delegate bool EnumWindowsProc(void* hWnd, void* lParam);
 
     public unsafe delegate int HookProc(int code, void* wParam, void* lParam);
-    
+
     public unsafe delegate void HookEventHandler(object sender, HookEventArgs e);
 
 
@@ -117,7 +117,7 @@ namespace DesktopReplacer
         [DllImport("user32.dll")]
         internal static extern int CallNextHookEx(void* hhook, int code, void* wParam, void* lParam);
 
-        [DllImport("native.dll", CharSet=CharSet.Ansi)]
+        [DllImport("native.dll", CharSet = CharSet.Ansi)]
         internal static extern int GetDisplayRefreshRate([MarshalAs(UnmanagedType.LPStr)] string lpszDeviceName);
 
         internal static T Cast<T>(void* ptr) => Cast<T>((IntPtr)ptr);

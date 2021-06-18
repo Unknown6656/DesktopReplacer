@@ -83,7 +83,7 @@ namespace DesktopReplacer
         private void UpdateTriangleVisiblity()
         {
             if (Triangle is FrameworkElement triangle)
-                triangle.Visibility = (Widget?.Content is null || !CanBeCollapsed) ? Visibility.Collapsed : Visibility.Visible;
+                triangle.Visibility = (Widget?.Content is null || !CanBeCollapsed) ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private static void CanBeCollapsedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

@@ -71,7 +71,7 @@ namespace DesktopReplacer
 
             void*[] arrPIDLs = new void*[paths.Length];
 
-            for (int i= 0; i < paths.Length; i++)
+            for (int i = 0; i < paths.Length; i++)
             {
                 int nResult = folder.ParseDisplayName(null, null, paths[i], out _, out void* pPIDL, out _);
 
