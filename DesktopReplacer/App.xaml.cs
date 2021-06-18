@@ -12,8 +12,7 @@ namespace DesktopReplacer
         : Application
     {
         private static readonly DirectoryInfo DIR = AppDomain.CurrentDomain.SetupInformation.ApplicationBase is string dir ? new DirectoryInfo(dir) : new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!;
-        private static readonly string ARCH = Environment.Is64BitProcess ? "x64" : "x86";
-        private static readonly string CEF_DIR = $"{DIR.FullName}/{ARCH}/";
+        private static readonly string CEF_DIR = Path.Combine(DIR.FullName, Environment.Is64BitProcess ? "x64" : "x86") + '/';
 
 
         public App() => AppDomain.CurrentDomain.AssemblyResolve += Resolver;
@@ -22,10 +21,11 @@ namespace DesktopReplacer
         {
             Cef.Initialize(new CefSettings
             {
-                BrowserSubprocessPath = CEF_DIR + "CefSharp.BrowserSubprocess.exe",
+                BrowserSubprocessPath = CEF_DIR + "../CefSharp.BrowserSubprocess.exe",
+                BackgroundColor = 0, // transparent
             }, performDependencyCheck: false, browserProcessHandler: null);
 
-            CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+            // CefSharpSettings.LegacyJavascriptBindingEnabled = true;
             CefSharpSettings.ConcurrentTaskExecution = true;
 
             base.OnStartup(e);

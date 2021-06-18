@@ -5,6 +5,7 @@ using System.Windows.Media;
 namespace DesktopReplacer
 {
     public partial class MonitorBackground
+        : UserControl
     {
         public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(MonitorBackground), new PropertyMetadata(null));
 

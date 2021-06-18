@@ -10,6 +10,7 @@
         <NullableContextOptions>enable</NullableContextOptions>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
+        <OutputType>Exe</OutputType>
         <OutputPath>$(SolutionDir)bin</OutputPath>
 
         <!-- <TrimMode>Link</TrimMode> -->
