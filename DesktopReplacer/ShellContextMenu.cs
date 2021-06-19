@@ -109,7 +109,7 @@ namespace DesktopReplacer
 
         private void ReleaseAll()
         {
-            void release<T>(ref T? obj)
+            static void release<T>(ref T? obj)
                 where T : class
             {
                 if (obj is { })
