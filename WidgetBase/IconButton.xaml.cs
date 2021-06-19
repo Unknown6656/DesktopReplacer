@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace unknown6656
+namespace DesktopReplacer.Widgets
 {
     public partial class IconButton
         : Button

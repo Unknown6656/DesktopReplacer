@@ -1,11 +1,11 @@
-﻿<Button x:Class="unknown6656.IconButton"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" 
-             d:DesignHeight="18" d:DesignWidth="18"
-             Cursor="Hand" Margin="0 3 3 0" Background="#8fff" BorderBrush="Black">
+﻿<Button x:Class="DesktopReplacer.Widgets.IconButton"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d" 
+        d:DesignHeight="18" d:DesignWidth="18"
+        Cursor="Hand" Margin="0 3 3 0" Background="#8fff" BorderBrush="Black">
     <Button.Style>
         <Style TargetType="{x:Type Button}">
             <Style.Triggers>

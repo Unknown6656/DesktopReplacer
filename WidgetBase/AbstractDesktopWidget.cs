@@ -5,17 +5,18 @@ using System.Windows;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Text.Json;
 using System.Timers;
 using System.Linq;
 using System.IO;
 using System;
 
-using Newtonsoft.Json;
+using Unknown6656.Common;
 
-[assembly: XmlnsPrefix("https://unknown6656.com/", "unknown6656")]
-[assembly: XmlnsDefinition("https://unknown6656.com/", "unknown6656")]
+[assembly: XmlnsPrefix("https://unknown6656.com/", "DesktopReplacer.Widgets")]
+[assembly: XmlnsDefinition("https://unknown6656.com/", "DesktopReplacer.Widgets")]
 
-namespace unknown6656
+namespace DesktopReplacer.Widgets
 {
     public abstract class AbstractDesktopWidget
         : ContentControl
@@ -209,11 +210,11 @@ namespace unknown6656
 
     public static class WidgetLoader
     {
-        private static readonly HashSet<string> _extensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".dll", ".ocx", ".exe", ".bin", ".dat", ".sys", ".com", ".widget" };
+        private static readonly HashSet<string> _extensions = new() { ".dll", ".ocx", ".exe", ".bin", ".dat", ".sys", ".com", ".widget" };
         private static readonly Assembly _current_assembly = Assembly.GetExecutingAssembly();
 
 
-        public static AbstractDesktopWidget[] LoadWidgetsFromDirectory(Dictionary<string, object?> settings, string widget_dir)
+        public static AbstractDesktopWidget[] LoadWidgetsFromDirectory(Dictionary<string, object?>? settings, string widget_dir, bool load_from_any_executable = true)
         {
             if (new DirectoryInfo(widget_dir) is { Exists: true } dir)
             {
@@ -230,30 +231,34 @@ namespace unknown6656
                     return null;
                 }
 
+                HashSet<string> filter = load_from_any_executable ? _extensions : new() { ".widget" };
+
                 return (from file in dir.EnumerateFiles()
-                        where _extensions.Contains(file.Extension)
+                        where filter.Contains(file.Extension.ToLowerInvariant())
                         let asm = tryfetch(file)
                         where asm is { }
-                        where asm != _current_assembly
                         from widget in LoadWidgets(settings, asm)
                         select widget).ToArray();
             }
 
-            return new AbstractDesktopWidget[0];
+            return Array.Empty<AbstractDesktopWidget>();
         }
 
-        public static AbstractDesktopWidget[] LoadWidgets(Dictionary<string, object?> settings, params Assembly[] assemblies)
+        public static AbstractDesktopWidget[] LoadWidgets(Dictionary<string, object?>? settings, params Assembly[] assemblies)
         {
             Type @base = typeof(AbstractDesktopWidget);
             AbstractDesktopWidget load_settings(AbstractDesktopWidget widget)
             {
-                if (GetSettingsType(widget) is Type target && settings.TryGetValue(widget.WidgetSettingsKey, out object? data))
-                {
-                    data = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data), target); // force convert types by named equality
+                object? data = null;
 
+                if (GetSettingsType(widget) is Type target && (settings?.TryGetValue(widget.WidgetSettingsKey, out data) ?? false))
                     if (data is { })
-                        TrySetSettings(widget, data);
-                }
+                    {
+                        data = JsonSerializer.Deserialize(JsonSerializer.Serialize(data), target); // force convert types by named equality
+
+                        if (data is { })
+                            TrySetSettings(widget, data);
+                    }
 
                 return widget;
             }
@@ -262,7 +267,7 @@ namespace unknown6656
                     from t in asm.GetTypes()
                     where t.Assembly != _current_assembly
                     where @base.IsAssignableFrom(t)
-                    where t != @base
+                    where !t.IsAbstract
                     let ins = Activator.CreateInstance(t) as AbstractDesktopWidget
                     where ins is { }
                     select load_settings(ins)).ToArray();
@@ -270,7 +275,7 @@ namespace unknown6656
 
         public static Dictionary<string, object?> UnloadWidgets(params AbstractDesktopWidget[] widgets)
         {
-            Dictionary<string, object?> settings = new Dictionary<string, object?>();
+            Dictionary<string, object?> settings = new();
 
             foreach (AbstractDesktopWidget? widget in widgets)
                 if (widget is { })
