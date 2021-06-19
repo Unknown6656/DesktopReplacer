@@ -1,34 +1,35 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Windows.Input;
-using System.Windows;
-using System.Windows.Data;
+﻿using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Interop;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-
-using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Shell;
-
-using unknown6656;
-
-using WinForms = System.Windows.Forms;
-using Drawing = System.Drawing;
-using System.Reflection;
-using Newtonsoft.Json;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Data;
+using System.Windows;
+
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Collections;
+using System.Reflection;
+using System.Threading;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System;
+
+using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.Win32;
+
 using Unknown6656.Common;
 using Unknown6656.Controls.Console;
 using Unknown6656.IO;
+
+using DesktopReplacer.Widgets;
+
+using WinForms = System.Windows.Forms;
+using Drawing = System.Drawing;
 
 namespace DesktopReplacer
 {
@@ -448,11 +449,7 @@ namespace DesktopReplacer
 
         private void LoadWidgets()
         {
-            using FileStream fs = widget_settings_file.OpenRead();
-            using StreamReader rd = new(fs);
-
-            string json = rd.ReadToEnd();
-            Dictionary<string, object?> settings = JsonConvert.DeserializeObject<Dictionary<string, object?>>(json);
+            Dictionary<string, object?>? settings = DataStream.FromFile(widget_settings_file).ToJSON<Dictionary<string, object?>>();
             List<object> w = new();
 
             foreach (UIElement holder in widgets.Children.Cast<UIElement>().ToArray())
@@ -477,16 +474,10 @@ namespace DesktopReplacer
                                           where holder is DesktopWidgetHolder { Widget: { } }
                                           select ((DesktopWidgetHolder)holder).Widget!).ToArray();
             Dictionary<string, object?> settings = WidgetLoader.UnloadWidgets(ws);
-            string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
 
-            using FileStream fs = widget_settings_file.OpenWrite();
-            using StreamWriter wr = new(fs);
+            DataStream.FromObjectAsJSON(settings).ToFile(widget_settings_file);
 
-            LoadedWidgets = new object[0];
-            wr.WriteLine(json);
-            wr.Flush();
-            wr.Close();
-            fs.Close();
+            LoadedWidgets = Array.Empty<object>();
         }
 
 #if IGNORE

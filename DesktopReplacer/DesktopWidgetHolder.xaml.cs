@@ -1,11 +1,14 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows.Media.Animation;
+using System.Windows.Controls;
 using System.Windows.Markup;
-using System.Windows;
-using System;
-using unknown6656;
-using System.ComponentModel;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
+using System.Windows;
+
+using System.ComponentModel;
+using System;
+
+using DesktopReplacer.Widgets;
+
 
 namespace DesktopReplacer
 {

@@ -48,8 +48,8 @@
                             <StackPanel Orientation="Vertical">
                                 <unknown6656:IconButton Content="{icons:MaterialDesign Kind=BlurOn}" ToolTip="Blur Desktop Background" Click="Blur_Click"/>
                                 <unknown6656:IconButton Content="{icons:MaterialDesign Kind=BlurOff}" ToolTip="Unblur Desktop Background" Click="Unblur_Click"/>
-                                <unknown6656:IconButton Content="{icons:Material Kind=Refresh}" ToolTip="Reload widgets, icons, and background image" Click="Refresh_Click"/>
-                                <unknown6656:IconButton Content="{icons:Material Kind=Close}" ToolTip="Exit desktop" Click="Close_Click"/>
+                                <unknown6656:IconButton Content="{icons:MaterialDesign Kind=Refresh}" ToolTip="Reload widgets, icons, and background image" Click="Refresh_Click"/>
+                                <unknown6656:IconButton Content="{icons:MaterialDesign Kind=Close}" ToolTip="Exit desktop" Click="Close_Click"/>
                             </StackPanel>
                             <Separator Width="20" Height="0"/>
                             <TextBlock>
