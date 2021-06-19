@@ -24,15 +24,14 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <PreserveCompilationContext>false</PreserveCompilationContext>
-
-        <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
+        <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="CefSharp.Wpf" Version="90.6.70" />
-        <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="../../WidgetBase/WidgetBase.csproj" />
+        <PackageReference PrivateAssets="All" Include="cef.redist.x64" Version="91.1.16" />
+        <PackageReference PrivateAssets="All" Include="CefSharp.Common" Version="91.1.160" />
+        <PackageReference PrivateAssets="All" Include="CefSharp.Wpf" Version="91.1.160" />
+        <PackageReference PrivateAssets="All" Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
+        <ProjectReference PrivateAssets="All" Include="../../WidgetBase/WidgetBase.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Page Update="Stocks.xaml">

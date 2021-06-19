@@ -23,6 +23,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <PreserveCompilationContext>false</PreserveCompilationContext>
+        <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
     </PropertyGroup>
     <ItemGroup>
         <COMReference Include="iTunesLib.dll">
@@ -35,9 +36,7 @@
         </COMReference>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="../../WidgetBase/WidgetBase.csproj" />
+        <PackageReference PrivateAssets="All" Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
+        <ProjectReference PrivateAssets="All" Include="../../WidgetBase/WidgetBase.csproj" />
     </ItemGroup>
 </Project>

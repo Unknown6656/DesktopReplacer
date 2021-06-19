@@ -23,12 +23,10 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <PreserveCompilationContext>false</PreserveCompilationContext>
+        <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="../../WidgetBase/WidgetBase.csproj" />
+        <ProjectReference PrivateAssets="All" Include="../../WidgetBase/WidgetBase.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Page Update="Corona.xaml">
