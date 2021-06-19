@@ -3,8 +3,6 @@ using System.Linq;
 using System.IO;
 using System;
 
-using Unknown6656.Controls.Console;
-using System.Security.Cryptography.X509Certificates;
 using System.Runtime.CompilerServices;
 
 namespace DesktopReplacer
@@ -80,9 +78,6 @@ namespace DesktopReplacer
                     return "";
             }
 
-
-
-            raw_bytes.HexDump();
 
             DesktopDictionary desktop = new();
 
