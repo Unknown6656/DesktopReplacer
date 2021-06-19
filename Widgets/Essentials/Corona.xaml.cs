@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Text.Json;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
-using unknown6656;
-
-namespace Widgets.Essentials
+namespace DesktopReplacer.Widgets.Essentials
 {
-    [WidgetInfo("Corona", "1.0")]
+    [WidgetInfo(nameof(Corona), "1.0")]
     public partial class Corona
     {
-        public override CoronaSettings DefaultSettings => new CoronaSettings
+        public override CoronaSettings DefaultSettings => new()
         {
             Countries = new Dictionary<string, long>
             {
@@ -42,49 +40,50 @@ namespace Widgets.Essentials
         {
             try
             {
-                string print(long num) => num.ToString("## ### ### ###").Trim();
-                using WebClient wc = new WebClient();
+                static string print(long num) => num.ToString("## ### ### ###").Trim();
+
+                using WebClient wc = new();
                 string json = await wc.DownloadStringTaskAsync("https://coronavirus-tracker-api.herokuapp.com/v2/locations");
-                _response data = JsonConvert.DeserializeObject<_response>(json);
+                _response data = JsonSerializer.Deserialize<_response>(json);
 
                 datagrid.ItemsSource = (from c in (from c in CurrentSettings.Countries.Keys
-                                                  from l in data.locations
-                                                  where l.country_code == c
-                                                  group l.latest by l.country_code into g
-                                                  select new _country
-                                                  {
-                                                      country_code = g.Key,
-                                                      latest = new _latest
-                                                      {
-                                                          deaths = g.Sum(l => l.deaths),
-                                                          confirmed = g.Sum(l => l.confirmed),
-                                                          recovered = g.Sum(l => l.recovered),
-                                                      },
-                                                  }).Append(new _country
-                                                  {
-                                                      country_code = "Σ",
-                                                      latest = data.latest
-                                                  })
-                                       let deaths = c.latest.deaths
-                                       let cases = c.latest.confirmed
-                                       let pop = CurrentSettings.Countries[c.country_code]
-                                       select new
-                                       {
-                                           Country = c.country_code,
-                                           Deaths = print(deaths),
-                                           Cases = print(cases),
-                                           KDR = $"{(double)deaths / cases * 100:F2}%",
-                                           CPop = $"{(double)cases / pop * 1000:F4}‰",
-                                           DPop = $"{(double)deaths / pop * 1000:F4}‰",
-                                       } as object).Prepend(new
-                                       {
-                                           Country = "",
-                                           Deaths = "Deaths",
-                                           Cases = "Cases",
-                                           KDR = "K/D-Ratio",
-                                           CPop = "C/Pop.",
-                                           DPop = "D/Pop.",
-                                       });
+                                                   from l in data.locations
+                                                   where l.country_code == c
+                                                   group l.latest by l.country_code into g
+                                                   select new _country
+                                                   {
+                                                       country_code = g.Key,
+                                                       latest = new _latest
+                                                       {
+                                                           deaths = g.Sum(l => l.deaths),
+                                                           confirmed = g.Sum(l => l.confirmed),
+                                                           recovered = g.Sum(l => l.recovered),
+                                                       },
+                                                   }).Append(new _country
+                                                   {
+                                                       country_code = "Σ",
+                                                       latest = data.latest
+                                                   })
+                                        let deaths = c.latest.deaths
+                                        let cases = c.latest.confirmed
+                                        let pop = CurrentSettings.Countries[c.country_code]
+                                        select new
+                                        {
+                                            Country = c.country_code,
+                                            Deaths = print(deaths),
+                                            Cases = print(cases),
+                                            KDR = $"{(double)deaths / cases * 100:F2}%",
+                                            CPop = $"{(double)cases / pop * 1000:F4}‰",
+                                            DPop = $"{(double)deaths / pop * 1000:F4}‰",
+                                        } as object).Prepend(new
+                                        {
+                                            Country = "",
+                                            Deaths = "Deaths",
+                                            Cases = "Cases",
+                                            KDR = "K/D-Ratio",
+                                            CPop = "C/Pop.",
+                                            DPop = "D/Pop.",
+                                        });
 
                 TickInterval = 600_000; // 10min
             }

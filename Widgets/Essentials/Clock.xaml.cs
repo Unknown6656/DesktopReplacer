@@ -1,14 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System;
 
-using unknown6656;
-
-namespace Widgets.Essentials
+namespace DesktopReplacer.Widgets.Essentials
 {
-    [WidgetInfo("Clock", "1.0")]
+    [WidgetInfo(nameof(Clock), "1.0")]
     public unsafe partial class Clock
+        : AbstractDesktopWidget
     {
-        private static readonly DateTime _unix0 = new DateTime(1970, 1, 1);
+        private static readonly DateTime _unix0 = new(1970, 1, 1);
 
 
         public Clock() => InitializeComponent();

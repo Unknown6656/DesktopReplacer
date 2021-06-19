@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 using Microsoft.Win32;
 
-using unknown6656;
-
-namespace Essentials
+namespace DesktopReplacer.Widgets.Essentials
 {
     [WidgetInfo("Performance Monitor", "1.0")]
     public unsafe partial class PerformanceMonitor
+        : AbstractDesktopWidget
     {
         private PerformanceCounter? _cpu_load;
         private PerformanceCounter? _cpu_temp0, _cpu_temp1;

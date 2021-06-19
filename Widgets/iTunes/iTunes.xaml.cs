@@ -1,18 +1,17 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows;
+using System.Linq;
+using System;
 
 using iTunesLib;
 
-using unknown6656;
-
-namespace Widgets.iTunes
+namespace DesktopReplacer.Widgets.iTunes
 {
-    [WidgetInfo("iTunes", "0.9")]
+    [WidgetInfo(nameof(iTunes), "0.9")]
     public unsafe partial class iTunes
+        : AbstractDesktopWidget
     {
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern bool ShowWindow(void* hWnd, int cmdShow);
@@ -57,7 +56,8 @@ namespace Widgets.iTunes
             IITTrack? track = _itunes?.CurrentTrack;
             ITPlayButtonState ppst = ITPlayButtonState.ITPlayButtonStateStopDisabled;
             double prog = track?.Duration is int d ? _itunes!.PlayerPosition / (double)d : 0;
-            string printtime(int seconds) => TimeSpan.FromSeconds(seconds).ToString("c");
+
+            static string printtime(int seconds) => TimeSpan.FromSeconds(seconds).ToString("c");
 
 
             _itunes?.GetPlayerButtonsState(out _, out ppst, out _);

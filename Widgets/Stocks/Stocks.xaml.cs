@@ -7,11 +7,9 @@ using System.Windows;
 using CefSharp;
 using CefSharp.Wpf;
 
-using unknown6656;
-
-namespace Widgets.Stocks
+namespace DesktopReplacer.Widgets.Stocks
 {
-    [WidgetInfo("Stocks", "1.0")]
+    [WidgetInfo(nameof(Stocks), "1.0")]
     public partial class Stocks
     {
 #if USE_BINDING
@@ -19,7 +17,7 @@ namespace Widgets.Stocks
 #endif
 
 
-        public override StocksSettings DefaultSettings => new StocksSettings();
+        public override StocksSettings DefaultSettings => new();
 
 
         public Stocks() => InitializeComponent();
