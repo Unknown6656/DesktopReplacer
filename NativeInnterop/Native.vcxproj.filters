@@ -3,12 +3,11 @@
   <ItemGroup>
     <ClCompile Include="wmi.cpp" />
     <ClCompile Include="performance_monitor.cpp" />
-    <ClCompile Include="display.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wmi.hpp" />
     <ClInclude Include="wmiexception.hpp" />
     <ClInclude Include="wmiresult.hpp" />
-    <ClInclude Include="nameof.hpp" />
+    <ClInclude Include="managed.hpp" />
   </ItemGroup>
 </Project>
