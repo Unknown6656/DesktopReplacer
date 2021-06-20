@@ -36,8 +36,6 @@ namespace DesktopReplacer
     public unsafe sealed class ShellContextMenu
         : NativeWindow
     {
-        #region FIELDS / CONSTANTS
-
         private const int MAX_PATH = 260;
         private const int S_OK = 0;
         private const int S_FALSE = 1;
@@ -55,14 +53,10 @@ namespace DesktopReplacer
         private string? _strParentFolder;
         private void*[]? _arrPIDLs;
 
-        #endregion
-        #region .CTOR / .DTOR
 
         public ShellContextMenu() => CreateHandle(new CreateParams());
 
         ~ShellContextMenu() => ReleaseAll();
-
-        #endregion
 
         private void*[] GetPIDLs_internal(IShellFolder? folder, string[] paths)
         {
@@ -114,7 +108,7 @@ namespace DesktopReplacer
             {
                 if (obj is { })
                 {
-                    Marshal.ReleaseComObject(obj);
+                    _ = Marshal.ReleaseComObject(obj);
                     obj = null;
                 }
             }
@@ -230,40 +224,27 @@ namespace DesktopReplacer
         /// <returns>true if the message has been handled, false otherwise</returns>
         protected override void WndProc(ref Message m)
         {
-            void* w = (void*)m.WParam;
-            void* l = (void*)m.LParam;
+            nint w = m.WParam;
+            nint l = m.LParam;
 
-            if ((_oContextMenu != null) &&
-                (m.Msg == (int)WM.MENUSELECT) &&
-                (HiWord((int)w) & (int)MFT.SEPARATOR) == 0 &&
-                (HiWord((int)w) & (int)MFT.POPUP) == 0)
+            if (_oContextMenu != null && (WM)m.Msg is WM.MENUSELECT &&
+                (HiWord(w) & (int)MFT.SEPARATOR) == 0 &&
+                (HiWord(w) & (int)MFT.POPUP) == 0)
             {
-                string info;
+                string info = "";
 
-                if (LoWord((uint)w) == (uint)CMD_CUSTOM.ExpandCollapse)
+                if ((CMD_CUSTOM)LoWord(w) is CMD_CUSTOM.ExpandCollapse)
                     info = "Expands or collapses the current selected item";
-                else
-                    info = "";
 
                 // TODO : wtf?
             }
 
-            if (_oContextMenu2 != null &&
-                (m.Msg == (int)WM.INITMENUPOPUP ||
-                 m.Msg == (int)WM.MEASUREITEM ||
-                 m.Msg == (int)WM.DRAWITEM))
-            {
-                if (_oContextMenu2.HandleMenuMsg(m.Msg, w, l) == S_OK)
-                    return;
-            }
-
-            if (_oContextMenu3 != null && m.Msg == (int)WM.MENUCHAR)
-            {
-                if (_oContextMenu3.HandleMenuMsg2((uint)m.Msg, w, l, null) == S_OK)
-                    return;
-            }
-
-            base.WndProc(ref m);
+            if (_oContextMenu2 is { } && (WM)m.Msg is WM.INITMENUPOPUP or WM.MEASUREITEM or WM.DRAWITEM && _oContextMenu2.HandleMenuMsg(m.Msg, w, l) is S_OK)
+                return;
+            else if (_oContextMenu3 is { } && (WM)m.Msg is WM.MENUCHAR && _oContextMenu3.HandleMenuMsg2((uint)m.Msg, w, l, null) is S_OK)
+                return;
+            else
+                base.WndProc(ref m);
         }
 
         private void InvokeContextMenuDefault(FileInfo[] files)
@@ -320,14 +301,14 @@ namespace DesktopReplacer
 
             int result;
             void* menu = null;
-            IntPtr ctx = default;
-            IntPtr ctx2 = default;
-            IntPtr ctx3 = default;
+            nint ctx = default;
+            nint ctx2 = default;
+            nint ctx3 = default;
 
             try
             {
                 if (GetContextMenuInterfaces(_oParentFolder, _arrPIDLs, out void* ptr))
-                    ctx = (IntPtr)ptr;
+                    ctx = (nint)ptr;
                 else
                 {
                     ReleaseAll();
@@ -338,8 +319,8 @@ namespace DesktopReplacer
                 menu = Win32.CreatePopupMenu();
                 result = _oContextMenu?.QueryContextMenu(menu, 0, Win32.CMD_FIRST, Win32.CMD_LAST, CMF.EXPLORE | CMF.NORMAL | ((Control.ModifierKeys & Keys.Shift) != 0 ? CMF.EXTENDEDVERBS : 0)) ?? S_FALSE;
 
-                Marshal.QueryInterface((IntPtr)ctx, ref IID_IContextMenu2, out ctx2);
-                Marshal.QueryInterface((IntPtr)ctx, ref IID_IContextMenu3, out ctx3);
+                Marshal.QueryInterface((nint)ctx, ref IID_IContextMenu2, out ctx2);
+                Marshal.QueryInterface((nint)ctx, ref IID_IContextMenu3, out ctx3);
 
                 _oContextMenu2 = Win32.Cast<IContextMenu2>(ctx2);
                 _oContextMenu3 = Win32.Cast<IContextMenu3>(ctx3);
@@ -366,11 +347,9 @@ namespace DesktopReplacer
             }
         }
 
-        private static int HiWord(int ptr) => (ptr & 0x80000000) == 0x80000000 ? ptr >> 16 : (ptr >> 16) & 0xffff;
+        private static nint HiWord(nint ptr) => (ptr & 0x80000000) == 0x80000000 ? ptr >> 16 : LoWord(ptr >> 16);
 
-        private static uint HiWord(uint ptr) => (ptr & 0x80000000) == 0x80000000 ? ptr >> 16 : LoWord(ptr >> 16);
-
-        private static uint LoWord(uint ptr) => ptr & 0xffff;
+        private static nint LoWord(nint ptr) => ptr & 0xffff;
     }
 
     public sealed class ShellContextMenuException
@@ -387,5 +366,103 @@ namespace DesktopReplacer
             : base(message)
         {
         }
+    }
+
+    [ComImport, Guid(GUID)]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal unsafe interface IShellFolder
+    {
+        public const string GUID = "000214E6-0000-0000-C000-000000000046";
+
+
+        [PreserveSig]
+        int ParseDisplayName(void* hwnd, void* pbc, [MarshalAs(UnmanagedType.LPWStr)] string pszDisplayName, out uint pchEaten, out void* ppidl, out SFGAO pdwAttributes);
+
+        [PreserveSig]
+        int EnumObjects(void* hwnd, SHCONTF grfFlags, out void* enumIDList);
+
+        [PreserveSig]
+        int BindToObject(void* pidl, void* pbc, ref Guid riid, out void* ppv);
+
+        [PreserveSig]
+        int BindToStorage(void* pidl, void* pbc, Guid* riid, out void* ppv);
+
+        [PreserveSig]
+        int CompareIDs(void* lParam, void* pidl1, void* pidl2);
+
+        [PreserveSig]
+        int CreateViewObject(void* hwndOwner, Guid riid, out void* ppv);
+
+        [PreserveSig]
+        int GetAttributesOf(uint cidl, [MarshalAs(UnmanagedType.LPArray)] void*[] apidl, ref SFGAO rgfInOut);
+
+        [PreserveSig]
+        int GetUIObjectOf(void* hwndOwner, uint cidl, [MarshalAs(UnmanagedType.LPArray)] void*[] apidl, ref Guid riid, void* rgfReserved, out void* ppv);
+
+        [PreserveSig]
+        int GetDisplayNameOf(void* pidl, SHGNO uFlags, void* lpName);
+
+        [PreserveSig]
+        int SetNameOf(void* hwnd, void* pidl, [MarshalAs(UnmanagedType.LPWStr)] string pszName, SHGNO uFlags, out void* ppidlOut);
+    }
+
+    [ComImport, Guid(GUID)]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal unsafe interface IContextMenu
+    {
+        public const string GUID = "000214e4-0000-0000-c000-000000000046";
+
+
+        [PreserveSig]
+        int QueryContextMenu(void* hmenu, uint iMenu, uint idCmdFirst, uint idCmdLast, CMF uFlags);
+
+        [PreserveSig]
+        int InvokeCommand(ref CMINVOKECOMMANDINFOEX info);
+
+        [PreserveSig]
+        int GetCommandString(uint idcmd, GCS uflags, uint reserved, [MarshalAs(UnmanagedType.LPArray)] byte[] commandstring, int cch);
+    }
+
+    [ComImport, Guid(GUID)]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal unsafe interface IContextMenu2
+    {
+        public const string GUID = "000214f4-0000-0000-c000-000000000046";
+
+
+        [PreserveSig]
+        int QueryContextMenu(void* hmenu, uint iMenu, uint idCmdFirst, uint idCmdLast, CMF uFlags);
+
+        [PreserveSig]
+        int InvokeCommand(ref CMINVOKECOMMANDINFOEX info);
+
+        [PreserveSig]
+        int GetCommandString(uint idcmd, GCS uflags, uint reserved, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder commandstring, int cch);
+
+        [PreserveSig]
+        int HandleMenuMsg(int uMsg, nint wParam, nint lParam);
+    }
+
+    [ComImport, Guid(GUID)]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal unsafe interface IContextMenu3
+    {
+        public const string GUID = "bcfce0a0-ec17-11d0-8d10-00a0c90f2719";
+
+
+        [PreserveSig]
+        int QueryContextMenu(void* hmenu, uint iMenu, uint idCmdFirst, uint idCmdLast, CMF uFlags);
+
+        [PreserveSig]
+        int InvokeCommand(ref CMINVOKECOMMANDINFOEX info);
+
+        [PreserveSig]
+        int GetCommandString(uint idcmd, GCS uflags, uint reserved, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder commandstring, int cch);
+
+        [PreserveSig]
+        int HandleMenuMsg(uint uMsg, nint wParam, nint lParam);
+
+        [PreserveSig]
+        int HandleMenuMsg2(uint uMsg, nint wParam, nint lParam, void* plResult);
     }
 }

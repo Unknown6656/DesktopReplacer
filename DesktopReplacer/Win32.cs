@@ -1,6 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
+using System;
 
 namespace DesktopReplacer
 {
@@ -157,7 +157,9 @@ namespace DesktopReplacer
             m_hhook = null;
         }
 
+#pragma warning disable CS0618 // obsolete warning for 'AppDomain.GetCurrentThreadId'
         public void Install() => m_hhook = Win32.SetWindowsHookEx(m_hookType, m_filterFunc, null, AppDomain.GetCurrentThreadId());
+#pragma warning restore CS0618
 
         public void Uninstall() => Win32.UnhookWindowsHookEx(m_hhook);
 
@@ -277,104 +279,6 @@ namespace DesktopReplacer
             this.x = x;
             this.y = y;
         }
-    }
-
-    [ComImport, Guid(GUID)]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal unsafe interface IShellFolder
-    {
-        public const string GUID = "000214E6-0000-0000-C000-000000000046";
-
-
-        [PreserveSig]
-        int ParseDisplayName(void* hwnd, void* pbc, [MarshalAs(UnmanagedType.LPWStr)] string pszDisplayName, out uint pchEaten, out void* ppidl, out SFGAO pdwAttributes);
-
-        [PreserveSig]
-        int EnumObjects(void* hwnd, SHCONTF grfFlags, out void* enumIDList);
-
-        [PreserveSig]
-        int BindToObject(void* pidl, void* pbc, ref Guid riid, out void* ppv);
-
-        [PreserveSig]
-        int BindToStorage(void* pidl, void* pbc, Guid* riid, out void* ppv);
-
-        [PreserveSig]
-        int CompareIDs(void* lParam, void* pidl1, void* pidl2);
-
-        [PreserveSig]
-        int CreateViewObject(void* hwndOwner, Guid riid, out void* ppv);
-
-        [PreserveSig]
-        int GetAttributesOf(uint cidl, [MarshalAs(UnmanagedType.LPArray)] void*[] apidl, ref SFGAO rgfInOut);
-
-        [PreserveSig]
-        int GetUIObjectOf(void* hwndOwner, uint cidl, [MarshalAs(UnmanagedType.LPArray)] void*[] apidl, ref Guid riid, void* rgfReserved, out void* ppv);
-
-        [PreserveSig]
-        int GetDisplayNameOf(void* pidl, SHGNO uFlags, void* lpName);
-
-        [PreserveSig]
-        int SetNameOf(void* hwnd, void* pidl, [MarshalAs(UnmanagedType.LPWStr)] string pszName, SHGNO uFlags, out void* ppidlOut);
-    }
-
-    [ComImport, Guid(GUID)]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal unsafe interface IContextMenu
-    {
-        public const string GUID = "000214e4-0000-0000-c000-000000000046";
-
-
-        [PreserveSig]
-        int QueryContextMenu(void* hmenu, uint iMenu, uint idCmdFirst, uint idCmdLast, CMF uFlags);
-
-        [PreserveSig]
-        int InvokeCommand(ref CMINVOKECOMMANDINFOEX info);
-
-        [PreserveSig]
-        int GetCommandString(uint idcmd, GCS uflags, uint reserved, [MarshalAs(UnmanagedType.LPArray)] byte[] commandstring, int cch);
-    }
-
-    [ComImport, Guid(GUID)]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal unsafe interface IContextMenu2
-    {
-        public const string GUID = "000214f4-0000-0000-c000-000000000046";
-
-
-        [PreserveSig]
-        int QueryContextMenu(void* hmenu, uint iMenu, uint idCmdFirst, uint idCmdLast, CMF uFlags);
-
-        [PreserveSig]
-        int InvokeCommand(ref CMINVOKECOMMANDINFOEX info);
-
-        [PreserveSig]
-        int GetCommandString(uint idcmd, GCS uflags, uint reserved, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder commandstring, int cch);
-
-        [PreserveSig]
-        int HandleMenuMsg(int uMsg, void* wParam, void* lParam);
-    }
-
-    [ComImport, Guid(GUID)]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal unsafe interface IContextMenu3
-    {
-        public const string GUID = "bcfce0a0-ec17-11d0-8d10-00a0c90f2719";
-
-
-        [PreserveSig]
-        int QueryContextMenu(void* hmenu, uint iMenu, uint idCmdFirst, uint idCmdLast, CMF uFlags);
-
-        [PreserveSig]
-        int InvokeCommand(ref CMINVOKECOMMANDINFOEX info);
-
-        [PreserveSig]
-        int GetCommandString(uint idcmd, GCS uflags, uint reserved, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder commandstring, int cch);
-
-        [PreserveSig]
-        int HandleMenuMsg(uint uMsg, void* wParam, void* lParam);
-
-        [PreserveSig]
-        int HandleMenuMsg2(uint uMsg, void* wParam, void* lParam, void* plResult);
     }
 
     [Flags]
