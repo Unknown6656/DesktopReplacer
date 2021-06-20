@@ -99,7 +99,7 @@
     <ClCompile Include="wmi.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="managed.hpp" />
+    <ClInclude Include="native_interop.hpp" />
     <ClInclude Include="wmi.hpp" />
     <ClInclude Include="wmiexception.hpp" />
     <ClInclude Include="wmiresult.hpp" />

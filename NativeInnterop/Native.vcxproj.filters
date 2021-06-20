@@ -8,6 +8,6 @@
     <ClInclude Include="wmi.hpp" />
     <ClInclude Include="wmiexception.hpp" />
     <ClInclude Include="wmiresult.hpp" />
-    <ClInclude Include="managed.hpp" />
+    <ClInclude Include="native_interop.hpp" />
   </ItemGroup>
 </Project>

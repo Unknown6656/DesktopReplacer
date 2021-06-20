@@ -125,9 +125,6 @@ namespace DesktopReplacer
         [DllImport(USER32_DLL)]
         internal static extern int CallNextHookEx(void* hhook, int code, void* wParam, void* lParam);
 
-        [DllImport("native.dll", CharSet = CharSet.Ansi)]
-        internal static extern int GetDisplayRefreshRate([MarshalAs(UnmanagedType.LPStr)] string lpszDeviceName);
-
         internal static T Cast<T>(void* ptr) => Cast<T>((IntPtr)ptr);
 
         internal static T Cast<T>(IntPtr ptr) => (T)Marshal.GetTypedObjectForIUnknown((IntPtr)ptr, typeof(T));

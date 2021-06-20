@@ -13,7 +13,7 @@ typedef System::String clrstring;
 
 
 
-ref class MonitorInfo
+ref class NativeInterop
 {
 public:
     static DEVMODEW GetDisplayInfo(clrstring^ devname)
