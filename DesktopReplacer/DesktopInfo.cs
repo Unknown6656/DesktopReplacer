@@ -159,7 +159,7 @@ namespace DesktopReplacer
             return desktop;
         }
 
-        public static (RawIconInfo[] Icons, double IconSize, ViewMdode ViewMdode)? FetchDesktopIcons()
+        public static (RawIconInfo[] Icons, double IconSize, ViewMdode ViewMode)? FetchDesktopIcons()
         {
             FileSystemInfo[] desktop_files = new[]
             {
@@ -187,7 +187,7 @@ namespace DesktopReplacer
             return null;
         }
 
-        public static (Rectangle Area, bool IsPrimary, string Name)[] FetchScreens() => Screen.AllScreens.ToArray(s => (s.Bounds, s.Primary, s.DeviceName));
+        public static MonitorInfo[] FetchMonitors() => Screen.AllScreens.ToArray(s => new MonitorInfo(s));
 
         public static Bitmap FetchDesktopImage()
         {
@@ -300,6 +300,34 @@ namespace DesktopReplacer
                     Hijacker = null;
                     HasBeenHijacked = false;
                 }
+        }
+    }
+
+    public sealed class MonitorInfo
+    {
+        public bool IsPrimary { get; }
+        public string? Name { get; }
+        public int Frequency { get; }
+        public int Width { get; }
+        public int Height { get; }
+        public int Top { get; }
+        public int Left { get; }
+        public int Bottom => Top + Height;
+        public int Right => Left + Width;
+
+
+        internal MonitorInfo(Screen screen)
+        {
+            Rectangle area = screen.Bounds;
+
+            Top = area.Top;
+            Left = area.Left;
+            Width = area.Width;
+            Height = area.Height;
+            Name = screen.DeviceName;
+            IsPrimary = screen.Primary;
+
+            Frequency = ; // TODO
         }
     }
 
