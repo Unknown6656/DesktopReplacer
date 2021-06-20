@@ -76,10 +76,10 @@ namespace DesktopReplacer
         internal static extern bool ReadProcessMemory(void* hProcess, void* lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out int lpNumberOfBytesRead);
 
         [DllImport("user32.dll")]
-        internal static extern void* GetWindowLong(void* hWnd, int nIndex);
+        internal static extern nint GetWindowLong(void* hWnd, int nIndex);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern void* SetWindowLong(void* hWnd, int nIndex, void* dwNewLong);
+        internal static extern void* SetWindowLong(void* hWnd, int nIndex, nint dwNewLong);
 
         [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
         internal static extern void SetLastError(int dwErrorCode);

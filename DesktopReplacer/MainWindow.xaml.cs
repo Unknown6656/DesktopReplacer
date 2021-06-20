@@ -39,7 +39,6 @@ namespace DesktopReplacer
         #region FIELDS / PROPERTIES
 
         private const string EXPLORER = "explorer";
-        private const string RKEY_DESKTOP = @"Software\Microsoft\Windows\Shell\Bags\1\Desktop";
 
         public static readonly DependencyProperty LoadedWidgetsProperty = DependencyProperty.Register(nameof(LoadedWidgets), typeof(object[]), typeof(MainWindow), new PropertyMetadata(null, (d, e) =>
         {
@@ -52,9 +51,6 @@ namespace DesktopReplacer
 
         private readonly List<DesktopIcon> _icons = new();
         private WinForms.Form? _list_container = null;
-        private void* _hwnd_desktop = null;
-        private void* _hwnd_listview = null;
-        private void* _hwnd_window = null;
 
 
         public object[]? LoadedWidgets
@@ -204,7 +200,7 @@ namespace DesktopReplacer
 
                 if (procs.Length == 0)
                 {
-                    using var p = new Process
+                    using Process? p = new()
                     {
                         StartInfo = new ProcessStartInfo
                         {
@@ -238,77 +234,12 @@ namespace DesktopReplacer
             }
         }
 
-        private void GetDesktopWindow()
-        {
-            void* _ProgMan = Win32.GetShellWindow();
-            void* _SHELLDLL_DefViewParent = _ProgMan;
-            void* _SHELLDLL_DefView = Win32.FindWindowEx(_ProgMan, null, "SHELLDLL_DefView", null);
-            void* _SysListView32 = Win32.FindWindowEx(_SHELLDLL_DefView, null, "SysListView32", "FolderView");
-
-            if (_SHELLDLL_DefView is null)
-                Win32.EnumWindows((hwnd, lParam) =>
-                {
-                    StringBuilder sb = new(8);
-
-                    Win32.GetClassName(hwnd, sb, sb.Capacity);
-
-                    if (sb.ToString().Equals("WorkerW"))
-                    {
-                        void* child = Win32.FindWindowEx(hwnd, null, "SHELLDLL_DefView", null);
-
-                        if (child != null)
-                        {
-                            _SHELLDLL_DefViewParent = hwnd;
-                            _SHELLDLL_DefView = child;
-                            _SysListView32 = Win32.FindWindowEx(child, null, "SysListView32", "FolderView");
-
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }, null);
-
-            _hwnd_desktop = _SHELLDLL_DefView;
-            _hwnd_listview = _SysListView32;
-        }
-
-        private void HijackDesktop()
-        {
-            _list_container = new WinForms.Form
-            {
-                Width = 500,
-                Height = 500,
-                Opacity = 0,
-                Visible = false,
-            };
-            _list_container.Show();
-            _list_container.Visible = false;
-
-            void* cont = (void*)_list_container.Handle;
-            RECT rect;
-
-            Win32.SetParent(_hwnd_listview, cont);
-            Win32.SetParent(_hwnd_window, _hwnd_desktop);
-            Win32.GetWindowRect(_hwnd_desktop, &rect);
-
-            Width = rect.right - rect.left + 1;
-            Height = rect.bottom - rect.top + 1;
-            WindowState = WindowState.Maximized;
-
-            int exstl_win = (int)Win32.GetWindowLong(_hwnd_window, -20) | 0x00000080; // WS_EX_TOOLWINDOW
-            int exstl_con = (int)Win32.GetWindowLong(cont, -20) | 0x00000080;
-
-            Win32.SetWindowLong(_hwnd_window, -20, (void*)exstl_win);
-            Win32.SetWindowLong(cont, -20, (void*)exstl_con);
-        }
-
         private void UpdateScreenLayout()
         {
             foreach (UIElement img in canvas.Children.Cast<UIElement>().Where(i => i is MonitorBackground).ToArray())
                 canvas.Children.Remove(img);
 
-            (Drawing.Rectangle area, bool primary, string name)[] screens = WinForms.Screen.AllScreens.Select(s => (s.Bounds, s.Primary, s.DeviceName)).ToArray();
+            (Drawing.Rectangle area, bool primary, string name)[] screens = Desktop.FetchScreens();
             double left = double.PositiveInfinity;
             double top = double.PositiveInfinity;
 
@@ -374,77 +305,56 @@ namespace DesktopReplacer
             InvalidateVisual();
         }
 
-        private void UpdateBackground()
-        {
-            FileInfo? fi = new(Environment.ExpandEnvironmentVariables("%AppData%/Microsoft/Windows/Themes/TranscodedWallpaper"));
-            Drawing.Bitmap bmp = (Drawing.Bitmap)Drawing.Image.FromFile(fi.FullName);
-
-            img_wallpaper.ImageSource = CreateImageSource(bmp);
-        }
+        private void UpdateBackground() => img_wallpaper.ImageSource = CreateImageSource(Desktop.FetchDesktopImage());
 
         private void UpdateListview()
         {
-            FileSystemInfo[] desktop_files = new[]
+            if (Desktop.FetchDesktopIcons() is (RawIconInfo[] icons, double icon_size, ViewMdode view_mode))
             {
-                Environment.SpecialFolder.DesktopDirectory,
-                Environment.SpecialFolder.CommonDesktopDirectory,
-            }.Select(p => new DirectoryInfo(Environment.GetFolderPath(p)))
-            .SelectMany(dir => dir.EnumerateFileSystemInfos())
-            .ToArray();
+                double width = icon_size + 60;
+                double height = icon_size + 50;
 
-            if (Registry.CurrentUser.OpenSubKey(RKEY_DESKTOP) is RegistryKey rkey && (byte[]?)rkey.GetValue("IconLayouts", Array.Empty<byte>()) is byte[] raw)
-                using (rkey)
+                desktop_icons.Children.Clear();
+                _icons.Clear();
+
+                foreach (RawIconInfo raw_icon in icons)
                 {
-                    DesktopDictionary desktops = DesktopDictionary.Read(raw, desktop_files);
-                    ViewMdode mode = (ViewMdode)(int)(rkey.GetValue("LogicalViewMode") ?? 3);
-                    double size = (int)(rkey.GetValue("IconSize") ?? 0) * 1.1;
-                    double width = size + 60;
-                    double height = size + 50;
-
-                    rkey.Close();
-
-                    desktop_icons.Children.Clear();
-                    _icons.Clear();
-
-                    foreach (DesktopIcon icon in from desktop in desktops.Desktops
-                                                 from workspace in desktop.Workspaces ?? Array.Empty<WorkspaceInfo>()
-                                                 from icon in workspace.Icons ?? Array.Empty<IconInfo>()
-                                                 select new DesktopIcon()
-                                                 {
-                                                     RawIcon = icon,
-                                                     AssociatedFile = icon.MatchingFiles.FirstOrDefault(),
-                                                     Text = icon.DisplayName.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase)
-                                                         || icon.DisplayName.EndsWith(".url", StringComparison.OrdinalIgnoreCase) ? icon.DisplayName[..^4] : icon.DisplayName,
-                                                     IconSize = size,
-                                                     Width = width,
-                                                     Height = height,
-                                                     XPos = icon.X * width,
-                                                     YPos = icon.Y * height,
-                                                 })
+                    DesktopIcon icon = new()
                     {
-                        _icons.Add(icon);
+                        RawIcon = raw_icon,
+                        AssociatedFile = raw_icon.MatchingFiles.FirstOrDefault(),
+                        Text = raw_icon.DisplayName.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase)
+                            || raw_icon.DisplayName.EndsWith(".url", StringComparison.OrdinalIgnoreCase) ? raw_icon.DisplayName[..^4] : raw_icon.DisplayName,
+                        IconSize = icon_size,
+                        Width = width,
+                        Height = height,
+                        XPos = raw_icon.X * width,
+                        YPos = raw_icon.Y * height,
+                    };
 
-                        if (icon.RawIcon.MatchingFiles.Length > 0 && icon.RawIcon.MatchingFiles[0] is { } file)
+                    _icons.Add(icon);
+
+                    if (raw_icon.MatchingFiles.Length > 0 && raw_icon.MatchingFiles[0] is { } file)
+                    {
+                        icon.IsHidden = file.Attributes.HasFlag(FileAttributes.Hidden);
+
+                        if (file is DirectoryInfo)
                         {
-                            icon.IsHidden = file.Attributes.HasFlag(FileAttributes.Hidden);
-
-                            if (file is DirectoryInfo)
-                            {
-                                // TODO
-                            }
-                            else
-                                using (ShellFile shell_file = ShellFile.FromFilePath(file.FullName))
-                                    icon.Icon = CreateImageSource(shell_file.Thumbnail.ExtraLargeBitmap);
+                            // TODO
                         }
-
-                        icon.MouseDoubleClick += Icon_MouseDoubleClick;
-                        icon.Click += Icon_Click;
-                        icon.MouseDown += Icon_MouseDown;
-                        icon.MouseUp += Icon_MouseUp;
-
-                        desktop_icons.Children.Add(icon);
+                        else
+                            using (ShellFile shell_file = ShellFile.FromFilePath(file.FullName))
+                                icon.Icon = CreateImageSource(shell_file.Thumbnail.ExtraLargeBitmap);
                     }
+
+                    icon.MouseDoubleClick += Icon_MouseDoubleClick;
+                    icon.Click += Icon_Click;
+                    icon.MouseDown += Icon_MouseDown;
+                    icon.MouseUp += Icon_MouseUp;
+
+                    desktop_icons.Children.Add(icon);
                 }
+            }
         }
 
         private void LoadWidgets()
@@ -587,14 +497,6 @@ namespace DesktopReplacer
         }
 
         #endregion
-    }
-
-    public enum ViewMdode
-        : int
-    {
-        Details = 1,
-        Tiles = 2,
-        Icons = 3,
     }
 
     [StructLayout(LayoutKind.Sequential)]

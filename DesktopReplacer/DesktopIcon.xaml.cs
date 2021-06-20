@@ -20,7 +20,7 @@ namespace DesktopReplacer
 
         public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register(nameof(IsHidden), typeof(bool), typeof(DesktopIcon), new PropertyMetadata(false));
 
-        public static readonly DependencyProperty RawIconProperty = DependencyProperty.Register(nameof(RawIcon), typeof(IconInfo), typeof(DesktopIcon), new PropertyMetadata(null));
+        public static readonly DependencyProperty RawIconProperty = DependencyProperty.Register(nameof(RawIcon), typeof(RawIconInfo), typeof(DesktopIcon), new PropertyMetadata(null));
 
 
         public bool IsHidden
@@ -47,9 +47,9 @@ namespace DesktopReplacer
             set => SetValue(IconProperty, value);
         }
 
-        public IconInfo RawIcon
+        public RawIconInfo RawIcon
         {
-            get => (IconInfo)GetValue(RawIconProperty);
+            get => (RawIconInfo)GetValue(RawIconProperty);
             set => SetValue(RawIconProperty, value);
         }
 
