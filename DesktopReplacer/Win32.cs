@@ -13,6 +13,14 @@ namespace DesktopReplacer
 
     internal static unsafe class Win32
     {
+        private const string GDI32_DLL = "gdi32.dll";
+        private const string SHELL32_DLL = "shell32.dll";
+        private const string KERNEL32_DLL = "kernel32.dll";
+        private const string USER32_DLL = "user32.dll";
+        private const string OLE32_DLL = "ole32.dll";
+        private const string COREDLL_DLL = "coredll.dll";
+        private const string SHLWAPI_DLL = "shlwapi.dll";
+
         internal const int LVM_GETITEMW = 0x104B;
         internal const int LVM_GETITEMCOUNT = 0x1004;
         internal const int LVM_SETITEMPOSITION = 0x100f;
@@ -21,100 +29,100 @@ namespace DesktopReplacer
         internal const uint CMD_LAST = 30000;
 
 
-        [DllImport("user32.dll")]
+        [DllImport(USER32_DLL)]
         internal static extern void* GetShellWindow();
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(USER32_DLL, SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern void* SetParent(void* hWndChild, void* hWndNewParent);
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(USER32_DLL, SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern void* GetParent(void* hWnd);
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(USER32_DLL, SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern void* FindWindowEx(void* hwndParent, void* hwndChildAfter, string lpszClass, string? lpszWindow);
 
-        [DllImport("user32.dll")]
+        [DllImport(USER32_DLL)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, void* lParam);
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(USER32_DLL, SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern int GetClassName(void* hWnd, StringBuilder lpClassName, int nMaxCount);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(USER32_DLL, SetLastError = true)]
         internal static extern bool GetWindowRect(void* hwnd, RECT* lpRect);
 
-        [DllImport("gdi32.dll")]
+        [DllImport(GDI32_DLL)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool DeleteObject(IntPtr hObject);
 
-        [DllImport("shell32.dll")]
+        [DllImport(SHELL32_DLL)]
         internal static extern int SHChangeNotify(int eventId, int flags, void* wParam, void* lParam);
 
-        [DllImport("user32.dll")]
+        [DllImport(USER32_DLL)]
         internal static extern int SendMessage(void* hWnd, uint Msg, void* wParam, void* lParam);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(USER32_DLL, SetLastError = true)]
         internal static extern uint GetWindowThreadProcessId(void* hWnd, out int lpdwProcessId);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport(KERNEL32_DLL, SetLastError = true)]
         internal static extern void* OpenProcess(uint processAccess, bool bInheritHandle, int processId);
 
-        [DllImport("coredll.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
+        [DllImport(COREDLL_DLL, SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool CloseHandle(void* hObject);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport(KERNEL32_DLL, SetLastError = true)]
         internal static extern void* VirtualAllocEx(void* hProcess, void* lpAddress, uint dwSize, int flAllocationType, int flProtect);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport(KERNEL32_DLL, SetLastError = true)]
         internal static unsafe extern bool VirtualFreeEx(void* hProcess, byte* pAddress, int size, int freeType);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport(KERNEL32_DLL, SetLastError = true)]
         internal static extern bool WriteProcessMemory(void* hProcess, void* lpBaseAddress, void* lpBuffer, int nSize, out int lpNumberOfBytesWritten);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport(KERNEL32_DLL, SetLastError = true)]
         internal static extern bool ReadProcessMemory(void* hProcess, void* lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out int lpNumberOfBytesRead);
 
-        [DllImport("user32.dll")]
+        [DllImport(USER32_DLL)]
         internal static extern nint GetWindowLong(void* hWnd, int nIndex);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport(USER32_DLL, SetLastError = true)]
         internal static extern void* SetWindowLong(void* hWnd, int nIndex, nint dwNewLong);
 
-        [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
+        [DllImport(KERNEL32_DLL, EntryPoint = "SetLastError")]
         internal static extern void SetLastError(int dwErrorCode);
 
-        [DllImport("shell32.dll")]
+        [DllImport(SHELL32_DLL)]
         internal static extern int SHGetDesktopFolder(out void* ppshf);
 
-        [DllImport("ole32.dll")]
+        [DllImport(OLE32_DLL)]
         internal static extern void CoTaskMemFree(void* ptr);
 
-        [DllImport("ole32.dll")]
+        [DllImport(OLE32_DLL)]
         internal static extern void* CoTaskMemAlloc(int size);
 
-        [DllImport("shlwapi.dll", ExactSpelling = false, CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport(SHLWAPI_DLL, ExactSpelling = false, CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern int StrRetToBuf(void* pstr, void* pidl, StringBuilder pszBuf, int cchBuf);
 
-        [DllImport("user32.dll", ExactSpelling = true, CharSet = CharSet.Auto)]
+        [DllImport(USER32_DLL, ExactSpelling = true, CharSet = CharSet.Auto)]
         internal static extern uint TrackPopupMenuEx(void* hmenu, TPM flags, int x, int y, void* hwnd, void* lptpm);
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(USER32_DLL, SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern void* CreatePopupMenu();
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(USER32_DLL, SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern bool DestroyMenu(void* hMenu);
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(USER32_DLL, SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern int GetMenuDefaultItem(void* hMenu, bool fByPos, uint gmdiFlags);
 
-        [DllImport("user32.dll")]
+        [DllImport(USER32_DLL)]
         internal static extern void* SetWindowsHookEx(HookType code, HookProc func, void* hInstance, int threadID);
 
-        [DllImport("user32.dll")]
+        [DllImport(USER32_DLL)]
         internal static extern int UnhookWindowsHookEx(void* hhook);
 
-        [DllImport("user32.dll")]
+        [DllImport(USER32_DLL)]
         internal static extern int CallNextHookEx(void* hhook, int code, void* wParam, void* lParam);
 
         [DllImport("native.dll", CharSet = CharSet.Ansi)]
@@ -182,6 +190,15 @@ namespace DesktopReplacer
 
             return Win32.CallNextHookEx(m_hhook, code, wParam, lParam);
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct RECT
+    {
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
     }
 
     [StructLayout(LayoutKind.Sequential)]
