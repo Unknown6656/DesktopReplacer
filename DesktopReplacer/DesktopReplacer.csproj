@@ -29,7 +29,7 @@
     <ItemGroup>
         <PackageReference Include="cef.redist.x64" Version="91.1.16" />
         <PackageReference Include="CefSharp.Common" Version="91.1.160" />
-        <PackageReference Include="CefSharp.Wpf" Version="91.1.160" />
+        <PackageReference Include="CefSharp.WinForms" Version="91.1.160" />
         <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
         <PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.8.0" />
         <PackageReference Include="Unknown6656.Core" Version="1.0.23" />
