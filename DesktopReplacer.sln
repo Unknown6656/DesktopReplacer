@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30001.183
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesktopReplacer", "DesktopReplacer\DesktopReplacer.csproj", "{94650025-1372-457A-A7ED-E65A70BA2C7A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC} = {BFF2A50E-6F75-44DC-9B16-0738D3C526AC}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WidgetBase", "WidgetBase\WidgetBase.csproj", "{329ABC3D-56ED-41AF-8835-094F14A00EA1}"
 EndProject
@@ -15,13 +12,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iTunes", "Widgets\iTunes\iTunes.csproj", "{370D2186-D884-425B-BF77-5C81E9150630}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Essentials", "Widgets\Essentials\Essentials.csproj", "{C9C2B75F-8AF3-4462-943B-878F4A3F0F5C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC} = {BFF2A50E-6F75-44DC-9B16-0738D3C526AC}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stocks", "Widgets\Stocks\Stocks.csproj", "{4510C9D2-0F43-424A-A71C-889A1CAE6B1B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Native", "Widgets\Native\Native.vcxproj", "{BFF2A50E-6F75-44DC-9B16-0738D3C526AC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativeInterop", "NativeInterop\NativeInterop.vcxproj", "{C963908B-608E-4835-ADA9-D1F7D3A03E49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,14 +87,16 @@ Global
 		{4510C9D2-0F43-424A-A71C-889A1CAE6B1B}.Release|x64.Build.0 = Release|Any CPU
 		{4510C9D2-0F43-424A-A71C-889A1CAE6B1B}.Release|x86.ActiveCfg = Release|Any CPU
 		{4510C9D2-0F43-424A-A71C-889A1CAE6B1B}.Release|x86.Build.0 = Release|Any CPU
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC}.Debug|x64.ActiveCfg = Debug|x64
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC}.Debug|x64.Build.0 = Debug|x64
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC}.Debug|x86.ActiveCfg = Debug|x64
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC}.Release|Any CPU.ActiveCfg = Release|x64
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC}.Release|x64.ActiveCfg = Release|x64
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC}.Release|x64.Build.0 = Release|x64
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC}.Release|x86.ActiveCfg = Release|x64
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Debug|x64.ActiveCfg = Debug|x64
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Debug|x64.Build.0 = Debug|x64
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Debug|x86.ActiveCfg = Debug|Win32
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Debug|x86.Build.0 = Debug|Win32
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Release|Any CPU.ActiveCfg = Release|Win32
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Release|x64.ActiveCfg = Release|x64
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Release|x64.Build.0 = Release|x64
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Release|x86.ActiveCfg = Release|Win32
+		{C963908B-608E-4835-ADA9-D1F7D3A03E49}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,7 +105,6 @@ Global
 		{370D2186-D884-425B-BF77-5C81E9150630} = {8AECBA31-A459-4E89-8FC1-C0B9E21DD0E5}
 		{C9C2B75F-8AF3-4462-943B-878F4A3F0F5C} = {8AECBA31-A459-4E89-8FC1-C0B9E21DD0E5}
 		{4510C9D2-0F43-424A-A71C-889A1CAE6B1B} = {8AECBA31-A459-4E89-8FC1-C0B9E21DD0E5}
-		{BFF2A50E-6F75-44DC-9B16-0738D3C526AC} = {8AECBA31-A459-4E89-8FC1-C0B9E21DD0E5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BEF676EE-307A-495D-A53A-AC20B3DCBD9A}
