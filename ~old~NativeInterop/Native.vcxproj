@@ -99,7 +99,9 @@
     <ClCompile Include="wmi.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="native_interop.hpp" />
+    <ClInclude Include="native_interop.cpp">
+      <FileType>CppClass</FileType>
+    </ClInclude>
     <ClInclude Include="wmi.hpp" />
     <ClInclude Include="wmiexception.hpp" />
     <ClInclude Include="wmiresult.hpp" />
