@@ -26,6 +26,6 @@
         <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference PrivateAssets="All" Include="Unknown6656.Core" Version="1.0.22" />
+        <PackageReference PrivateAssets="All" Include="Unknown6656.Core" Version="1.0.23" />
     </ItemGroup>
 </Project>
