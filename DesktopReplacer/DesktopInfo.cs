@@ -326,8 +326,7 @@ namespace DesktopReplacer
             Height = area.Height;
             Name = screen.DeviceName;
             IsPrimary = screen.Primary;
-
-            Frequency = ; // TODO
+            Frequency = Win32.GetDisplayRefreshRate(Name);
         }
     }
 

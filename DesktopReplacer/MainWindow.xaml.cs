@@ -239,11 +239,11 @@ namespace DesktopReplacer
             foreach (UIElement img in canvas.Children.Cast<UIElement>().Where(i => i is MonitorBackground).ToArray())
                 canvas.Children.Remove(img);
 
-            (Drawing.Rectangle area, bool primary, string name)[] screens = Desktop.FetchScreens();
+            MonitorInfo[] screens = Desktop.FetchMonitors();
             double left = double.PositiveInfinity;
             double top = double.PositiveInfinity;
 
-            foreach ((Drawing.Rectangle area, _, _) in screens)
+            foreach (MonitorInfo monitor in screens)
             {
                 left = Math.Min(left, area.Left);
                 top = Math.Min(top, area.Top);
@@ -497,15 +497,6 @@ namespace DesktopReplacer
         }
 
         #endregion
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct RECT
-    {
-        public int left;
-        public int top;
-        public int right;
-        public int bottom;
     }
 
     [StructLayout(LayoutKind.Sequential)]

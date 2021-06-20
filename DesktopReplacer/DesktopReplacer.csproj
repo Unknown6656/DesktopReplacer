@@ -1,6 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
+        <RollForward>Major</RollForward>
         <PlatformTarget>x64</PlatformTarget>
         <UseWPF>true</UseWPF>
         <UseWindowsForms>true</UseWindowsForms>
@@ -29,20 +30,27 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="cef.redist.x64" Version="91.1.16" />
-        <PackageReference Include="CefSharp.Common" Version="91.1.160" />
-        <PackageReference Include="CefSharp.WinForms" Version="91.1.160" />
+        <Compile Remove="DesktopWidgetHolder.xaml.cs" />
+        <Compile Remove="MainWindow.xaml.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Page Remove="DesktopWidgetHolder.xaml" />
+        <Page Remove="MainWindow.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="DesktopWidgetHolder.xaml" />
+        <None Include="DesktopWidgetHolder.xaml.cs" />
+        <None Include="MainWindow.xaml" />
+        <None Include="MainWindow.xaml.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CefSharp.WinForms.NetCore" Version="91.1.160" />
         <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
         <PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.8.0" />
         <PackageReference Include="Unknown6656.Core" Version="1.0.23" />
         <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="../Widgets/iTunes/iTunes.csproj" />
-        <ProjectReference Include="../WidgetBase/WidgetBase.csproj" />
+      <ProjectReference Include="..\Widgets\Native\Native.vcxproj" />
     </ItemGroup>
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="false">
-        <!-- TODO -->
-        <!--<Exec Command="cd &quot;$(OutDir)&quot;&#xD;&#xA;del /S &quot;*.pdb&quot;&#xD;&#xA;del /S &quot;*.json&quot;&#xD;&#xA;echo &quot;deleted debugging data&quot;" />-->
-    </Target>
 </Project>
