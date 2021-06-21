@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Microsoft.Web.WebView2.WinForms;
 using Microsoft.Web.WebView2.Core;
 
 using Unknown6656.IO;
@@ -26,32 +27,52 @@ namespace DesktopReplacer
 
         public DesktopWindow DesktopWindow { get; }
         public MonitorInfo[] Monitors { get; private set; }
+        public WebView2 Browser { get; }
 
 
         public DesktopReplacerWindow()
         {
-            InitializeComponent();
-
             DesktopWindow = Desktop.GetDesktopWindow();
             Monitors = Array.Empty<MonitorInfo>();
+            Browser = new();
+            (Browser as ISupportInitialize)?.BeginInit();
+
+            SuspendLayout();
+
+            Browser.CreationProperties = null;
+            Browser.Source = new("about:empty", UriKind.Absolute);
+            Browser.ZoomFactor = 1D;
+
+
+            Button button = new()
+            {
+                Location = new(200, 200),
+                Size = new(100, 30),
+                Text = "Close",
+            };
+            button.Click += (_, _) => Close();
+
+            Controls.Add(button);
+            Controls.Add(Browser);
 
             AllowTransparency = true;
+            DoubleBuffered = true;
             TransparencyKey = Color.Transparent;
+            FormBorderStyle = FormBorderStyle.None;
+
+            (Browser as ISupportInitialize)?.EndInit();
+
+            ResumeLayout(false);
 
             Load += DesktopReplacerWindow_Load;
         }
 
         ~DesktopReplacerWindow() => DesktopWindow.Restore();
 
-        private void Close_Click(object sender, EventArgs e) => Close();
-
-        private void DesktopReplacerWindow_Load(object? sender, EventArgs e)
+        private async void DesktopReplacerWindow_Load(object? sender, EventArgs e)
         {
-            // CoreWebView2Environment environment = await FetchWW2Environment();
-            // CoreWebView2Controller controller = await environment.CreateCoreWebView2ControllerAsync(Handle);
-
-            browser.Source = new("https://google.com/");
-
+            CoreWebView2Environment environment = await FetchWW2Environment();
+            CoreWebView2Controller controller = await environment.CreateCoreWebView2ControllerAsync(Handle);
 
             UpdateDekstop();
 
@@ -119,11 +140,30 @@ The WebView2 runtime could not be found. How would like to proceed?
             Width = m_right - m_left;
             Height = m_bottom - m_top;
 
-            browser.Left = 0;
-            browser.Top = 0;
-            browser.Width = Width;
-            browser.Height = Height;
-            browser.SendToBack();
+            string html = GenerateHTMLCode();
+
+            Browser.Left = 0;
+            Browser.Top = 0;
+            Browser.Width = Width;
+            Browser.Height = Height;
+            Browser.SendToBack();
+            Browser.NavigateToString(html);
+        }
+
+        private string GenerateHTMLCode()
+        {
+
+            return @"
+<!DOCTYPE html>
+<html lang=""en"">
+<body style=""font-size:7em;"">
+<h1>top kek</h1>
+lol
+</body>
+</html>
+";
+
+
         }
     }
 }
