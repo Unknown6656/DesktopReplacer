@@ -14,4 +14,3 @@
 #include <windows.h>
 #include <wingdi.h>
 #include <WinUser.h>
-#include <vcclr.h>

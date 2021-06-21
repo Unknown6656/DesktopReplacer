@@ -1,8 +1,7 @@
 #pragma once
 
 #include "wmi.hpp"
-
-#define TO_LPCWSTR(clr_str) pin_ptr<const wchar_t>(PtrToStringChars(clr_str))
+#include <vcclr.h>
 
 
 typedef System::String clrstring;
@@ -58,8 +57,9 @@ namespace NativeInterop
     public:
         static DEVMODEW GetDisplayInfo(clrstring^ devname)
         {
-            DEVMODEW dev;
-            bool hres = EnumDisplaySettingsW(TO_LPCWSTR(devname), ENUM_CURRENT_SETTINGS, &dev);
+            DEVMODEW dev{};
+            pin_ptr<const wchar_t> c_devname = PtrToStringChars(devname);
+            bool hres = EnumDisplaySettingsW(c_devname, ENUM_CURRENT_SETTINGS, &dev);
 
             if (!hres)
                 dev.dmSize = 0;
@@ -74,16 +74,16 @@ namespace NativeInterop
             return dev.dmSize ? dev.dmDisplayFrequency : 0;
         }
 
-        static Win32_Processor __cdecl fetch_processor()
+        static Win32_Processor fetch_processor()
         {
-            return Wmi::retrieveWmi<Win32_Processor>();
+            return Wmi::WmiClass::retrieveWmi<Win32_Processor>();
         }
 
-        static float __cdecl fetch_temperature()
+        static float fetch_temperature()
         {
-            MSAcpi_ThermalZoneTemperature temp = Wmi::retrieveWmi<MSAcpi_ThermalZoneTemperature>();
+            MSAcpi_ThermalZoneTemperature temp = Wmi::WmiClass::retrieveWmi<MSAcpi_ThermalZoneTemperature>();
 
             return (temp.CurrentTemperature / 10.0f) - 273.15f;
         }
     };
-}
+};
