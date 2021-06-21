@@ -173,7 +173,7 @@ namespace Wmi
 
     class WmiClass
     {
-        void throw_wmi_exception(const HRESULT& hr, const std::string& source)
+        static void throw_wmi_exception(const HRESULT& hr, const std::string& source)
         {
             if (FAILED(hr))
             {
@@ -235,7 +235,7 @@ namespace Wmi
             }
         }
 
-        IWbemLocator* createWbemLocator()
+        static IWbemLocator* createWbemLocator()
         {
             IWbemLocator* pLocator = nullptr;
             HRESULT hr = CoCreateInstance(CLSID_WbemLocator, nullptr, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (void**)&pLocator);
@@ -245,7 +245,7 @@ namespace Wmi
             return pLocator;
         }
 
-        IWbemServices* connect(IWbemLocator* const pLocator)
+        static IWbemServices* connect(IWbemLocator* const pLocator)
         {
             IWbemServices* pServices;
             HRESULT hr = pLocator->ConnectServer(_bstr_t("\\\\.\\root\\cimv2"), nullptr, nullptr, nullptr, 0, nullptr, nullptr, &pServices);
@@ -268,7 +268,7 @@ namespace Wmi
             return pServices;
         }
 
-        IEnumWbemClassObject* execute(IWbemServices* const pServices, const std::string& q)
+        static IEnumWbemClassObject* execute(IWbemServices* const pServices, const std::string& q)
         {
             IEnumWbemClassObject* pClassObject;
             HRESULT hr = pServices->ExecQuery(_bstr_t("WQL"), _bstr_t(q.c_str()), WBEM_FLAG_RETURN_IMMEDIATELY | WBEM_FLAG_FORWARD_ONLY, nullptr, &pClassObject);
@@ -278,7 +278,7 @@ namespace Wmi
             return pClassObject;
         }
 
-        std::wstring convertVariant(const VARIANT& value)
+        static std::wstring convertVariant(const VARIANT& value)
         {
             bool handled = true;
             std::wstringstream ss;
@@ -409,7 +409,7 @@ namespace Wmi
             return ss.str();
         }
 
-        void foreachObject(IEnumWbemClassObject* const pClassObject, function<bool(IWbemClassObject*)> fn)
+        static void foreachObject(IEnumWbemClassObject* const pClassObject, function<bool(IWbemClassObject*)> fn)
         {
             bool cont = true;
             HRESULT hr = WBEM_S_NO_ERROR;
@@ -434,7 +434,7 @@ namespace Wmi
             }
         }
 
-        void foreachProperty(IWbemClassObject* const object, function<bool(const std::wstring&, const std::wstring&)> fn)
+        static void foreachProperty(IWbemClassObject* const object, function<bool(const std::wstring&, const std::wstring&)> fn)
         {
             SAFEARRAY* psaNames = nullptr;
             HRESULT hr = object->GetNames(nullptr, WBEM_FLAG_ALWAYS | WBEM_FLAG_NONSYSTEM_ONLY, nullptr, &psaNames);
@@ -465,7 +465,8 @@ namespace Wmi
                 catch (const Wmi::WmiException& e)
                 {
                     std::stringstream ss;
-                    ss << "Can't convert parameter: " << std::string(propName) << ": " << e.errorMessage;
+                    std::wstring wpropname(propName);
+                    ss << "Can't convert parameter: " << std::string(wpropname.begin(), wpropname.end()) << ": " << e.errorMessage;
 
                     throw Wmi::WmiException(ss.str(), e.errorCode);
                 }
@@ -479,8 +480,8 @@ namespace Wmi
 
             SafeArrayDestroy(psaNames);
         }
-
-        void query(const std::string& q, WmiResult& out)
+    public:
+        __declspec(dllexport) static void query(const std::string& q, WmiResult& out)
         {
             CoInitialize(nullptr);
 
@@ -560,7 +561,7 @@ namespace Wmi
             CoUninitialize();
         }
 
-        inline WmiResult query(const std::string& q)
+        __declspec(dllexport) static inline WmiResult query(const std::string & q)
         {
             WmiResult result;
             query(q, result);
@@ -569,7 +570,7 @@ namespace Wmi
         }
 
         // template<class T, typename std::enable_if<std::is_base_of<WmiClass, T>::value>::type* = nullptr>
-        template <class T> inline void retrieveWmi(T* const out)
+        template <class T> __declspec(dllexport) static inline void retrieveWmi(T* const out)
         {
             const std::string q = std::string("SELECT * FROM ") + T::getWmiClassName();
             WmiResult result;
@@ -578,7 +579,7 @@ namespace Wmi
             out->setProperties(result, 0);
         }
 
-        template <class T> inline T retrieveWmi()
+        template <class T> __declspec(dllexport) static inline T retrieveWmi()
         {
             T temp{};
 
@@ -587,7 +588,7 @@ namespace Wmi
             return std::move(temp);
         }
 
-        template <class T> inline void retrieveAllWmi(std::vector<T>& out)
+        template <class T> __declspec(dllexport) static inline void retrieveAllWmi(std::vector<T>& out)
         {
             const std::string q = std::string("Select * From ") + T::getWmiClassName();
             T result{};
@@ -604,7 +605,7 @@ namespace Wmi
             }
         }
 
-        template <class T> inline std::vector<T> retrieveAllWmi()
+        template <class T> __declspec(dllexport) static inline std::vector<T> retrieveAllWmi()
         {
             std::vector<T> ret;
             retrieveAllWmi(ret);
