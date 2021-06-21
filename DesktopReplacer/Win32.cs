@@ -53,7 +53,7 @@ namespace DesktopReplacer
 
         [DllImport(GDI32_DLL)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool DeleteObject(IntPtr hObject);
+        internal static extern bool DeleteObject(nint hObject);
 
         [DllImport(SHELL32_DLL)]
         internal static extern int SHChangeNotify(int eventId, int flags, void* wParam, void* lParam);
@@ -125,9 +125,9 @@ namespace DesktopReplacer
         [DllImport(USER32_DLL)]
         internal static extern int CallNextHookEx(void* hhook, int code, void* wParam, void* lParam);
 
-        internal static T Cast<T>(void* ptr) => Cast<T>((IntPtr)ptr);
+        internal static T Cast<T>(void* ptr) => Cast<T>((nint)ptr);
 
-        internal static T Cast<T>(IntPtr ptr) => (T)Marshal.GetTypedObjectForIUnknown((IntPtr)ptr, typeof(T));
+        internal static T Cast<T>(nint ptr) => (T)Marshal.GetTypedObjectForIUnknown(ptr, typeof(T));
     }
 
     public sealed unsafe class HookEventArgs
