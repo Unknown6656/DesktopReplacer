@@ -10,6 +10,9 @@ using Microsoft.Win32;
 
 using Unknown6656.Common;
 
+using native = NativeInterop.NativeInterop;
+
+
 namespace DesktopReplacer
 {
     public struct RawDesktopInfo
@@ -326,7 +329,7 @@ namespace DesktopReplacer
             Height = area.Height;
             Name = screen.DeviceName;
             IsPrimary = screen.Primary;
-            Frequency = Win32.GetDisplayRefreshRate(Name);
+            Frequency = native.GetDisplayRefreshRate(Name);
         }
     }
 
