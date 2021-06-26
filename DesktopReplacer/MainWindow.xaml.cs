@@ -61,46 +61,12 @@ namespace DesktopReplacer
 
         public IEnumerable<DesktopIcon> SelectedDesktopIcons => _icons.Where(d => d.IsSelected);
 
-        #endregion
-        #region .CTOR / .DTOR
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            RestartExplorer();
-            GetDesktopWindow();
-
-            if (!widget_settings_file.Exists)
-            {
-                using FileStream fs = widget_settings_file.Create();
-                using StreamWriter wr = new(fs);
-
-                wr.Write("{}");
-                wr.Flush();
-                wr.Close();
-                fs.Close();
-            }
-        }
-
-        ~MainWindow() => RestoreDesktop();
-
-        #endregion
-        #region UI EVENT HANDLERS
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                _hwnd_window = (void*)new WindowInteropHelper(this).Handle;
-
-                HijackDesktop();
-                UpdateBackground();
-                UpdateScreenLayout();
-                UpdateListview();
                 LoadWidgets();
-
-                SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
-                SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
             }
             catch (Exception? ex)
             when (!Debugger.IsAttached)
@@ -121,29 +87,13 @@ namespace DesktopReplacer
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
-            SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
-            SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
-
-            RestoreDesktop();
             UnloadWidgets();
 
-            Application.Current.Shutdown(0);
         }
-
-        private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
         private void Blur_Click(object sender, RoutedEventArgs e) => AnimateBlur(30);
 
         private void Unblur_Click(object sender, RoutedEventArgs e) => AnimateBlur(0);
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateBackground();
-            UpdateScreenLayout();
-            UpdateListview();
-            UnloadWidgets();
-            LoadWidgets();
-        }
 
         private void Icon_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -175,13 +125,6 @@ namespace DesktopReplacer
         {
         }
 
-        private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e) => UpdateScreenLayout();
-
-        private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
-        {
-            if (e.Category == UserPreferenceCategory.Desktop)
-                UpdateBackground();
-        }
 
         private void AnimateBlur(double target_radius)
         {
@@ -189,8 +132,6 @@ namespace DesktopReplacer
             // img_wallpaper.BlurRadius = target_radius;
         }
 
-        #endregion
-        #region BACK-END
 
         private static void RestartExplorer()
         {
@@ -233,79 +174,6 @@ namespace DesktopReplacer
                 Win32.DeleteObject(handle);
             }
         }
-
-        private void UpdateScreenLayout()
-        {
-            foreach (UIElement img in canvas.Children.Cast<UIElement>().Where(i => i is MonitorBackground).ToArray())
-                canvas.Children.Remove(img);
-
-            MonitorInfo[] screens = Desktop.FetchMonitors();
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-
-            foreach (MonitorInfo monitor in screens)
-            {
-                left = Math.Min(left, area.Left);
-                top = Math.Min(top, area.Top);
-            }
-
-            Console.WriteLine($"-----------------------\nx: {left}  y: {top}");
-
-            foreach ((Drawing.Rectangle area, bool primary, string name) in screens)
-            {
-                Console.WriteLine($"{primary}: {area}");
-
-                FrameworkElement elem = grid_main;
-                MonitorInfo mon = new()
-                {
-                    Width = area.Width,
-                    Height = area.Height,
-                    Left = area.Left - left,
-                    Top = area.Top - top,
-                    Frequency = Win32.GetDisplayRefreshRate(name),
-                    Name = name,
-                };
-
-                if (primary)
-                    img_wallpaper.Monitor = mon;
-                else
-                {
-                    elem = new MonitorBackground(mon);
-
-                    BindingOperations.SetBinding(elem, MonitorBackground.ImageSourceProperty, new Binding
-                    {
-                        Source = img_wallpaper,
-                        Path = new PropertyPath(MonitorBackground.ImageSourceProperty),
-                        Mode = BindingMode.TwoWay,
-                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                    });
-                    BindingOperations.SetBinding(elem, MonitorBackground.BlurRadiusProperty, new Binding
-                    {
-                        Source = img_wallpaper,
-                        Path = new PropertyPath(MonitorBackground.BlurRadiusProperty),
-                        Mode = BindingMode.TwoWay,
-                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                    });
-
-                    canvas.Children.Add(elem);
-                }
-
-                elem.Width = mon.Width;
-                elem.Height = mon.Height;
-                elem.SetValue(Canvas.LeftProperty, mon.Left);
-                elem.SetValue(Canvas.TopProperty, mon.Top);
-                elem.SetValue(Canvas.RightProperty, mon.Right);
-                elem.SetValue(Canvas.BottomProperty, mon.Bottom);
-
-                Console.WriteLine($"  {elem}:  {area.Left - left} {area.Top - top}");
-            }
-
-            Console.WriteLine(canvas.Children.Count);
-
-            InvalidateVisual();
-        }
-
-        private void UpdateBackground() => img_wallpaper.ImageSource = CreateImageSource(Desktop.FetchDesktopImage());
 
         private void UpdateListview()
         {
@@ -462,41 +330,6 @@ namespace DesktopReplacer
                 }
         }
 #endif
-
-        private void RestoreDesktop()
-        {
-            if (_hwnd_listview is null)
-                return;
-
-            Win32.SetParent(_hwnd_listview, _hwnd_desktop);
-            _list_container?.Close();
-            _list_container?.Dispose();
-            _list_container = null;
-            _hwnd_listview = null;
-        }
-
-        public static T? Find<T>(DependencyObject? parent)
-            where T : DependencyObject
-        {
-            if (parent is { })
-            {
-                int cc = VisualTreeHelper.GetChildrenCount(parent);
-
-                for (int i = 0; i < cc; ++i)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-
-                    if (child is T t)
-                        return t;
-                    else if (Find<T>(child) is { } c)
-                        return c;
-                }
-            }
-
-            return null;
-        }
-
-        #endregion
     }
 
     [StructLayout(LayoutKind.Sequential)]
