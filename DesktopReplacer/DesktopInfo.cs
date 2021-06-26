@@ -11,7 +11,7 @@ using Microsoft.Win32;
 using Unknown6656.Common;
 
 using native = NativeInterop.NativeInterop;
-
+using Unknown6656.IO;
 
 namespace DesktopReplacer
 {
@@ -162,7 +162,7 @@ namespace DesktopReplacer
             return desktop;
         }
 
-        public static (RawIconInfo[] Icons, double IconSize, ViewMdode ViewMode)? FetchDesktopIcons()
+        public static (RawIconInfo[] Icons, double IconSize, ViewMode ViewMode)? FetchDesktopIcons()
         {
             FileSystemInfo[] desktop_files = new[]
             {
@@ -176,7 +176,7 @@ namespace DesktopReplacer
                 using (rkey)
                 {
                     Desktop desktops = FetchDesktopIcons(raw, desktop_files);
-                    ViewMdode mode = (ViewMdode)(int)(rkey.GetValue(RKEY_LOGICALVIEWMODE) ?? 3);
+                    ViewMode mode = (ViewMode)(int)(rkey.GetValue(RKEY_LOGICALVIEWMODE) ?? 3);
                     double icon_size = (int)(rkey.GetValue(RKEY_ICONSIZE) ?? 0) * 1.1;
 
                     rkey.Close();
@@ -192,12 +192,9 @@ namespace DesktopReplacer
 
         public static MonitorInfo[] FetchMonitors() => Screen.AllScreens.ToArray(s => new MonitorInfo(s));
 
-        public static Bitmap FetchDesktopImage()
-        {
-            FileInfo fi = new(Environment.ExpandEnvironmentVariables(DESKTOP_IMAGE_PATH));
+        public static string FetchDesktopImagePath() => Environment.ExpandEnvironmentVariables(DESKTOP_IMAGE_PATH);
 
-            return (Bitmap)Image.FromFile(fi.FullName);
-        }
+        public static Bitmap FetchDesktopImage() => DataStream.FromFile(FetchDesktopImagePath()).ToBitmap();
 
         public static DesktopWindow GetDesktopWindow()
         {
@@ -333,7 +330,7 @@ namespace DesktopReplacer
         }
     }
 
-    public enum ViewMdode
+    public enum ViewMode
         : int
     {
         Details = 1,
