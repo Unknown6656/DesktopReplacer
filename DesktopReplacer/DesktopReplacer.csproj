@@ -11,7 +11,7 @@
         <NullableContextOptions>enable</NullableContextOptions>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-        <OutputType>Exe</OutputType>
+        <OutputType>WinExe</OutputType>
         <OutputPath>$(SolutionDir)bin</OutputPath>
 
         <!-- <TrimMode>Link</TrimMode> -->
@@ -34,8 +34,32 @@
         <Compile Remove="MainWindow.xaml.cs" />
     </ItemGroup>
     <ItemGroup>
+      <None Remove="resources\desktop-template.html" />
+      <None Remove="resources\icon-template.html" />
+      <None Remove="resources\monitor-template.html" />
+      <None Remove="resources\script-template.js" />
+      <None Remove="resources\style-template.css" />
+    </ItemGroup>
+    <ItemGroup>
         <Page Remove="DesktopWidgetHolder.xaml" />
         <Page Remove="MainWindow.xaml" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="resources\desktop-template.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="resources\icon-template.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="resources\monitor-template.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="resources\script-template.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="resources\style-template.css">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     <ItemGroup>
         <None Include="DesktopWidgetHolder.xaml" />
@@ -44,7 +68,7 @@
         <None Include="MainWindow.xaml.cs" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Unknown6656.Core" Version="1.0.23" />
+        <PackageReference Include="Unknown6656.Core" Version="1.0.24" />
         <ProjectReference Include="..\NativeInterop\NativeInterop.vcxproj" />
         <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.864.35" />
         <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
