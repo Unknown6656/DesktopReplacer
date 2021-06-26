@@ -1,0 +1,55 @@
+﻿html, body {
+    font-family: Bahnschrift;
+    margin: 0px;
+}
+
+desktop, monitor {
+    position: fixed;
+    display: block;
+}
+
+desktop {
+    background: gray;
+    left: 0px;
+    top: 0px;
+}
+
+monitor {
+    background-image: url('§background§');
+    background-size: cover;
+}
+
+description {
+    background-color: #55555588;
+    backdrop-filter: blur(5px);
+    font-size: 10pt;
+    color: whitesmoke;
+    border-radius: 20px;
+    position: absolute;
+    display: block;
+    padding: 10px;
+    margin: 10px;
+    bottom: 0px;
+    right: 0px;
+}
+
+icons {
+    position: absolute;
+    height: calc(100% - 40px);
+    width: calc(100% - 40px);
+    display: block;
+    margin: 20px;
+    left: 0px;
+    top: 0px;
+}
+
+icon {
+    text-shadow: 1px 2px 4px black;
+    display: inline-block;
+    word-break: break-all;
+    text-align: center;
+    position: absolute;
+    overflow: hidden;
+    font-size: 9pt;
+    color: white;
+}
