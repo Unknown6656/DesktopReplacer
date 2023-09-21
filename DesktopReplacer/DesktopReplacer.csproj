@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
         <PlatformTarget>x64</PlatformTarget>
@@ -28,7 +28,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="cef.redist.x64" Version="91.1.16" />
-        <PackageReference Include="CefSharp.Common" Version="98.1.210" />
+        <PackageReference Include="CefSharp.Common" Version="116.0.230" />
         <PackageReference Include="CefSharp.Wpf" Version="98.1.210" />
         <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
         <PackageReference Include="MahApps.Metro.IconPacks.MaterialDesign" Version="4.8.0" />
